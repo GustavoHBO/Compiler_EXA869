@@ -44,7 +44,8 @@ public enum TokenEnum {
     STRING(12, "String", "\"(\\x20|\\x21|[\\x23-\\x7E]|\\d|\\\")*\""), 
     SYMBOL(13, "Symbol", "\\x20|\\x21|[\\x23-\\x7E]"), 
     SPACE(14, "Space", "\\s"), 
-    ERROR(15, "ERROR", "");
+    ERROR(15, "ERROR", ""),
+    ERROR_NUMBER(16, "ERROR_NUMBER", "");
     
     private final int VALUE; // Can be used in comparing between values.
     private final String NAME; // Identify the Token, can be used on messagens.

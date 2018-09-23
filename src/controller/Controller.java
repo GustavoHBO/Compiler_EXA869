@@ -78,7 +78,7 @@ public class Controller {
         StringBuilder file_output;
         String token_found = "";
         String file_buffer;
-        String[] line_read;
+        String strAux = "";
         Token token = null;
         File file = new File(file_name);
         file_output = new StringBuilder("");
@@ -128,15 +128,27 @@ public class Controller {
                                 token = new Token(TokenEnum.SPACE, count_line, count_column, token_found);
                             } else {
                                 if(token != null){
-                                    if(token.getValue() == TokenEnum.NUMBER.getVALUE() && file_buffer.toCharArray()[i] == 'a'){
+                                    strAux += file_buffer.toCharArray()[i];
+                                    if((token.getType().getVALUE() == TokenEnum.NUMBER.getVALUE() || token.getType().getVALUE() == TokenEnum.DIGIT.getVALUE())){
+                                        if(file_buffer.toCharArray()[i] != ' '){
+                                            if(!strAux.matches(TokenEnum.ARITHMETIC_OPERATOR.getREGEX())){
+                                                if(!strAux.matches("\\(")){
+                                                    token.setType(TokenEnum.ERROR_NUMBER);
+                                                    token.setString(token_found);
+                                                }
+                                            }
+                                        }
+                                    } else if (token.getType().getVALUE() == TokenEnum.ERROR_NUMBER.getVALUE() && file_buffer.toCharArray()[i] != ' '){
                                         
+                                        token.setString(token_found);
+                                    } else {
+                                        list_tokens.add(token);
+                                        file_output.append(token.toString() + "\n");
+                                        count_column += token_found.length()-1; // Calculates the actual column.
+                                        token_found = "";
+                                        token = null;
+                                        i--;
                                     }
-                                    list_tokens.add(token);
-                                    file_output.append(token.toString() + "\n");
-                                    count_column += token_found.length()-1; // Calculates the actual column.
-                                    token_found = "";
-                                    token = null;
-                                    i--;
                                 }
                             }
                         }

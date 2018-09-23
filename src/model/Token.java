@@ -41,12 +41,64 @@ public class Token {
         this.string = string;
     }
     
-    public int getValue(){
-        return type.getVALUE();
-    }
-    
     @Override
     public String toString(){
-        return "Found a token! Line: " + line + " Column: " + column + " | Type: " + type.getNAME() + " : \"" + string + "\"\n";
+        return "Found a token! Line: " + getLine() + " Column: " + getColumn() + " | Type: " + getType().getNAME() + " : \"" + getString() + "\"\n";
+    }
+    
+    /**
+     * @return the string
+     */
+    public String getString() {
+        return string;
+    }
+
+    /**
+     * @param string the string to set
+     */
+    public void setString(String string) {
+        this.string = string;
+    }
+
+    /**
+     * @return the line
+     */
+    public int getLine() {
+        return line;
+    }
+
+    /**
+     * @param line the line to set
+     */
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    /**
+     * @return the column
+     */
+    public int getColumn() {
+        return column;
+    }
+
+    /**
+     * @param column the column to set
+     */
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
+    /**
+     * @return the type
+     */
+    public TokenEnum getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(TokenEnum type) {
+        this.type = type;
     }
 }
