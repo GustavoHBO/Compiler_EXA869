@@ -129,27 +129,30 @@ public class Controller {
                             } else {
                                 if(token != null){
                                     strAux += file_buffer.toCharArray()[i];
-                                    if((token.getType().getVALUE() == TokenEnum.NUMBER.getVALUE() || token.getType().getVALUE() == TokenEnum.DIGIT.getVALUE())){
-                                        if(file_buffer.toCharArray()[i] != ' '){
-                                            if(!strAux.matches(TokenEnum.ARITHMETIC_OPERATOR.getREGEX())){
-                                                if(!strAux.matches("\\(")){
-                                                    token.setType(TokenEnum.ERROR_NUMBER);
-                                                    token.setString(token_found);
-                                                }
-                                            }
-                                        }
-                                    } else if (token.getType().getVALUE() == TokenEnum.ERROR_NUMBER.getVALUE() && file_buffer.toCharArray()[i] != ' '){
-                                        
+                                    if((token.getType().getVALUE() == TokenEnum.NUMBER.getVALUE() || token.getType().getVALUE() == TokenEnum.DIGIT.getVALUE()) && strAux.substring(0, 1).matches(TokenEnum.LETTER.getREGEX())){
+                                        token.setType(TokenEnum.ERROR_NUMBER);
                                         token.setString(token_found);
+                                    } else if (token.getType().getVALUE() == TokenEnum.ERROR_NUMBER.getVALUE() && (file_buffer.substring(i).matches(TokenEnum.LETTER.getREGEX()) || file_buffer.substring(i).matches(TokenEnum.NUMBER.getREGEX()))){
+                                        token.setString(token_found);
+                                        System.out.println("Error " +token_found);
                                     } else {
                                         list_tokens.add(token);
                                         file_output.append(token.toString() + "\n");
                                         count_column += token_found.length()-1; // Calculates the actual column.
                                         token_found = "";
                                         token = null;
+                                        strAux = "";
                                         i--;
                                     }
                                 }
+                            }
+                            if(i+1 == file_buffer.length()){
+                                list_tokens.add(token);
+                                file_output.append(token.toString() + "\n");
+                                count_column += token_found.length()-1; // Calculates the actual column.
+                                token_found = "";
+                                token = null;
+                                strAux = "";
                             }
                         }
                         count_line++;
