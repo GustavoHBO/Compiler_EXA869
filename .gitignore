@@ -25,3 +25,4 @@ hs_err_pid*
 
 #Netbeans Files
 dist/
+build/
