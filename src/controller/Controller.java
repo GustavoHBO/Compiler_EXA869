@@ -104,10 +104,10 @@ public class Controller {
                                 token = new Token(TokenEnum.KEYWORD, count_line, count_column, token_found);
                             } else if (token_found.matches(TokenEnum.IDENTIFIER.getREGEX())){
                                 token = new Token(TokenEnum.IDENTIFIER, count_line, count_column, token_found);
-                            } else if(token_found.matches(TokenEnum.NUMBER.getREGEX())){
-                                token = new Token(TokenEnum.NUMBER, count_line, count_column, token_found);
                             } else if(token_found.matches(TokenEnum.DIGIT.getREGEX())){
                                 token = new Token(TokenEnum.DIGIT, count_line, count_column, token_found);
+                            } else if(token_found.matches(TokenEnum.NUMBER.getREGEX())){
+                                token = new Token(TokenEnum.NUMBER, count_line, count_column, token_found);
                             } else if(token_found.matches(TokenEnum.LETTER.getREGEX())){
                                 token = new Token(TokenEnum.LETTER, count_line, count_column, token_found);
                             } else if(token_found.matches(TokenEnum.ARITHMETIC_OPERATOR.getREGEX())){
@@ -132,9 +132,13 @@ public class Controller {
                                     if((token.getType().getVALUE() == TokenEnum.NUMBER.getVALUE() || token.getType().getVALUE() == TokenEnum.DIGIT.getVALUE()) && strAux.substring(0, 1).matches(TokenEnum.LETTER.getREGEX())){
                                         token.setType(TokenEnum.ERROR_NUMBER);
                                         token.setString(token_found);
+                                    } else if((token.getType().getVALUE() == TokenEnum.NUMBER.getVALUE() || token.getType().getVALUE() == TokenEnum.DIGIT.getVALUE()) && strAux.substring(0, 1).matches("\\.")){
+                                        token.setType(TokenEnum.ERROR_NUMBER_FLOAT);
+                                        token.setString(token_found);
                                     } else if (token.getType().getVALUE() == TokenEnum.ERROR_NUMBER.getVALUE() && (file_buffer.substring(i).matches(TokenEnum.LETTER.getREGEX()) || file_buffer.substring(i).matches(TokenEnum.NUMBER.getREGEX()))){
                                         token.setString(token_found);
-                                        System.out.println("Error " +token_found);
+                                    } else if (token.getType().getVALUE() == TokenEnum.ERROR_NUMBER_FLOAT.getVALUE() && (file_buffer.substring(i).matches(TokenEnum.LETTER.getREGEX()) || file_buffer.substring(i).matches(TokenEnum.NUMBER.getREGEX()))){
+                                        token.setString(token_found);
                                     } else {
                                         list_tokens.add(token);
                                         file_output.append(token.toString() + "\n");
@@ -146,7 +150,7 @@ public class Controller {
                                     }
                                 }
                             }
-                            if(i+1 == file_buffer.length()){
+                            if(i+1 >= file_buffer.length()){
                                 list_tokens.add(token);
                                 file_output.append(token.toString() + "\n");
                                 count_column += token_found.length()-1; // Calculates the actual column.

@@ -32,8 +32,8 @@ public enum TokenEnum {
     */
     KEYWORD(1, "Keyword", "bool|c(lass|onst)|e(lse|xtends)|f(loat|alse)|i(f|nt)|m(ethod|ain)|re(ad|turn)|string|t(hen|rue)|v(ariables|oid)|w(hil|rit)e"), 
     IDENTIFIER(2, "Identifier", "[a-zA-Z]([a-zA-Z]|\\d|_)*"), 
-    NUMBER(3, "Number", "(-)?\\s*\\d(\\d)*(\\.\\d(\\d)*)?"), 
-    DIGIT(4, "Digit", "\\d"), 
+    DIGIT(3, "Digit", "\\d"), 
+    NUMBER(4, "Number", "(-)?\\s*\\d(\\d)*(\\.\\d(\\d)*)?"), 
     LETTER(5, "Letter", "[a-zA-Z]"), 
     ARITHMETIC_OPERATOR(6, "Arithmetic Operator", "\\+|\\-|\\*|\\/|\\+\\+|\\-\\-"), 
     RELATIONAL_OPERATOR(7, "Relational Operator", "!=|==|<|<=|>|>=|="), 
@@ -45,7 +45,8 @@ public enum TokenEnum {
     SYMBOL(13, "Symbol", "\\x20|\\x21|[\\x23-\\x7E]"), 
     SPACE(14, "Space", "\\s"), 
     ERROR(15, "ERROR", ""),
-    ERROR_NUMBER(16, "ERROR_NUMBER", "");
+    ERROR_NUMBER(16, "ERROR_NUMBER", ""),
+    ERROR_NUMBER_FLOAT(17, "ERROR_NUMBER_FLOAT", "");
     
     private final int VALUE; // Can be used in comparing between values.
     private final String NAME; // Identify the Token, can be used on messagens.
