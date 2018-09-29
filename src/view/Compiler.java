@@ -22,10 +22,12 @@
 package view;
 
 import controller.Controller;
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -40,12 +42,17 @@ public class Compiler extends Application {
     public void start(Stage primaryStage) {
         Button btn = new Button();
         btn.setText("Click here to analyse the files on folder files");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                Controller controller = Controller.getInstance();
-                controller.analyseFile("./files/");
+        btn.setOnAction((ActionEvent event) -> {
+            Controller controller = Controller.getInstance();
+            try {
+                controller.analyzeFile("./files/");
+                System.exit(0);
+            } catch (IOException ex) {
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("ERROR Dialog");
+                alert.setHeaderText(null);
+                alert.setContentText("O Arquivo não pode ser lido ou o arquivo de saída não pode ser escrito");
+                alert.showAndWait();
             }
         });
         

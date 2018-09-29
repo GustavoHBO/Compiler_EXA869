@@ -25,10 +25,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Token;
 import util.TokenEnum;
 
@@ -38,7 +38,6 @@ import util.TokenEnum;
  */
 public class Controller {
     
-    private final String STRING_SPLIT = "\\s";
     private ArrayList<Token> list_tokens;
     
     /* Design Pattern Singleton */
@@ -72,35 +71,37 @@ public class Controller {
 
     /*-------------------------------------------------Public Methods-----------------------------------------------------------------*/
     
-    public void analyseFile(String file_name){
-        int count_line = 0;
-        int count_column = 0;
+    /**
+     * Using the file path for read all archives on folder and analyze these files.
+     * @param file_name - Folder file path.
+     * @throws java.io.IOException - If the file not be read.
+     * @throws java.io.FileNotFoundException - If the file not exist.
+     */
+    public void analyzeFile(String file_name) throws FileNotFoundException, IOException{
+        int count_line;
+        int count_column;
         StringBuilder file_output;
-        String token_found = "";
+        String token_found;
         String file_buffer;
-        String strAux = "";
-        Token token = null;
+        String strAux;
+        Token token;
         File file = new File(file_name);
         file_output = new StringBuilder("");
-        file_buffer = "";
-        
+
         if(file.isDirectory()){
-            FileReader fileReader = null;
+            FileReader fileReader;
             BufferedReader bufferedReader;
-            try {
-                System.out.println("The files on this folders is:");
-                for (String list : file.list()) {
-                    System.out.println(list);
-                    fileReader = new FileReader(file_name + list);
-                    bufferedReader = new BufferedReader(fileReader);
-                    count_line = 1;
-                    token_found = "";
-                    token = null;
-                    strAux = "";
-                    list_tokens = new ArrayList<>();
+            for (String list : file.list()) {
+                fileReader = new FileReader(file_name + list);
+                bufferedReader = new BufferedReader(fileReader);
+                count_line = 1;
+                token_found = "";
+                token = null;
+                strAux = "";
+                list_tokens = new ArrayList<>();
+                if(!list.substring(list.length()-4).equals(".lex")){
                     while(bufferedReader.ready()){
                         file_buffer = bufferedReader.readLine();
-                        System.out.println(file_buffer);
                         count_column = 0;
                         for(int i = 0; i < file_buffer.length(); i++){
                             token_found += file_buffer.toCharArray()[i];
@@ -133,9 +134,9 @@ public class Controller {
                             } else if(token_found.matches(TokenEnum.SPACE.getREGEX())){
                                 token = new Token(TokenEnum.SPACE, count_line, count_column, token_found);
                             } 
-                            
+
                                 /* The next section identifies possible errors of bad token formation */
-                            
+
                             else if(token_found.matches(TokenEnum.ERROR_NUMBER.getREGEX())){
                                 token = new Token(TokenEnum.ERROR_NUMBER, count_line, count_column, token_found);
                             } else if(token_found.matches(TokenEnum.ERROR_NUMBER_FLOAT.getREGEX())){
@@ -148,7 +149,7 @@ public class Controller {
                                 if(token != null){
                                     strAux += file_buffer.toCharArray()[i];
                                     list_tokens.add(token);
-                                    file_output.append(token.toString() + "\n");
+                                    file_output.append(token.toString()).append("\n");
                                     count_column += token_found.length()-1; // Calculates the actual column.
                                     token_found = "";
                                     token = null;
@@ -158,9 +159,9 @@ public class Controller {
                                     token = new Token(TokenEnum.ERROR_TOKEN_UNKNOWN, count_line, count_column, token_found);
                                 }
                             }
-                            if(i+1 >= file_buffer.length() && token.getType().getVALUE() != TokenEnum.ERROR_BLOCK_COMMENT.getVALUE()){
+                            if(i+1 >= file_buffer.length() && token != null && token.getType().getVALUE() != TokenEnum.ERROR_BLOCK_COMMENT.getVALUE()){
                                 list_tokens.add(token);
-                                file_output.append(token.toString() + "\n");
+                                file_output.append(token.toString()).append("\n");
                                 count_column += token_found.length()-1; // Calculates the actual column.
                                 token_found = "";
                                 token = null;
@@ -172,23 +173,42 @@ public class Controller {
                     if(token != null){
                         list_tokens.add(token);
                     }
-                    System.out.println(list_tokens.toString());
-                }   
-                System.out.println("Terminei");
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(view.Compiler.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(view.Compiler.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
-                try {
+                    bufferedReader.close();
                     fileReader.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(view.Compiler.class.getName()).log(Level.SEVERE, null, ex);
+                    saveFileOutput(list_tokens, file_name, list);
                 }
-            }
+            }   
         } else{
-            System.out.println("The name choose isn't a folder!");
-            System.out.println(file.getAbsoluteFile());
+            throw new FileNotFoundException();
+        }
+    }
+    
+    /**
+     * Save the list of tokens in a file with extension .lex
+     * @param list_tokens - List of tokens that will be save.
+     * @param filePath - The file path.
+     * @param fileName - The file name.
+     * @throws IOException - If the file not be save.
+     */
+    private void saveFileOutput(ArrayList<Token> list_tokens, String filePath, String fileName) throws IOException{
+        System.out.println(fileName);
+        
+        if(fileName.lastIndexOf(".") != -1){// Look for last . for remove the extension .*
+            fileName = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+        
+        File file = new File(filePath + fileName + ".lex");
+        if(file.exists()){
+            file.delete();
+        }
+        //file.createNewFile();
+        
+        try (FileWriter fileWriter = new FileWriter(file); PrintWriter filePrinter = new PrintWriter(fileWriter)) {//Write the file.
+            list_tokens.forEach((list_token) -> {
+                filePrinter.println(list_token.toString());
+            });
+            filePrinter.close();
+            fileWriter.close();
         }
     }
 }
