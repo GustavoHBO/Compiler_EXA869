@@ -45,8 +45,11 @@ public enum TokenEnum {
     SYMBOL(13, "Symbol", "\\x20|\\x21|[\\x23-\\x7E]"), 
     SPACE(14, "Space", "\\s"), 
     ERROR(15, "ERROR", ""),
-    ERROR_NUMBER(16, "ERROR_NUMBER", ""),
-    ERROR_NUMBER_FLOAT(17, "ERROR_NUMBER_FLOAT", "");
+    ERROR_NUMBER(16, "ERROR_NUMBER", "(-)?\\s*\\d(\\d)*(\\.\\d(\\d)*)?\\w+"),
+    ERROR_NUMBER_FLOAT(17, "ERROR_NUMBER_FLOAT", "(-)?\\s*\\d(\\d)*(\\.)+"),
+    ERROR_BLOCK_COMMENT(18, "ERROR_BLOCK_COMMENT", "\\/\\*[\\s\\S]*"),
+    ERROR_STRING(19, "ERROR_STRING", "\"(\\x20|\\x21|[\\x23-\\x7E]|\\d|\\\")*"),
+    ERROR_TOKEN_UNKNOWN(20, "ERROR_TOKEN_UNKNOWN", "");
     
     private final int VALUE; // Can be used in comparing between values.
     private final String NAME; // Identify the Token, can be used on messagens.

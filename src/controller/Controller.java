@@ -94,6 +94,10 @@ public class Controller {
                     fileReader = new FileReader(file_name + list);
                     bufferedReader = new BufferedReader(fileReader);
                     count_line = 1;
+                    token_found = "";
+                    token = null;
+                    strAux = "";
+                    list_tokens = new ArrayList<>();
                     while(bufferedReader.ready()){
                         file_buffer = bufferedReader.readLine();
                         System.out.println(file_buffer);
@@ -116,6 +120,8 @@ public class Controller {
                                 token = new Token(TokenEnum.RELATIONAL_OPERATOR, count_line, count_column, token_found);
                             } else if(token_found.matches(TokenEnum.LOGICAL_OPERATOR.getREGEX())){
                                 token = new Token(TokenEnum.LOGICAL_OPERATOR, count_line, count_column, token_found);
+                            } else if(token_found.matches(TokenEnum.LINE_COMMENT.getREGEX())){
+                                token = new Token(TokenEnum.LINE_COMMENT, count_line, count_column, token_found);
                             } else if(token_found.matches(TokenEnum.BLOCK_COMMENT.getREGEX())){
                                 token = new Token(TokenEnum.BLOCK_COMMENT, count_line, count_column, token_found);
                             } else if(token_found.matches(TokenEnum.DELIMITER.getREGEX())){
@@ -126,31 +132,33 @@ public class Controller {
                                 token = new Token(TokenEnum.SYMBOL, count_line, count_column, token_found);
                             } else if(token_found.matches(TokenEnum.SPACE.getREGEX())){
                                 token = new Token(TokenEnum.SPACE, count_line, count_column, token_found);
+                            } 
+                            
+                                /* The next section identifies possible errors of bad token formation */
+                            
+                            else if(token_found.matches(TokenEnum.ERROR_NUMBER.getREGEX())){
+                                token = new Token(TokenEnum.ERROR_NUMBER, count_line, count_column, token_found);
+                            } else if(token_found.matches(TokenEnum.ERROR_NUMBER_FLOAT.getREGEX())){
+                                token = new Token(TokenEnum.ERROR_NUMBER_FLOAT, count_line, count_column, token_found);
+                            } else if(token_found.matches(TokenEnum.ERROR_BLOCK_COMMENT.getREGEX())){
+                                token = new Token(TokenEnum.ERROR_BLOCK_COMMENT, count_line, count_column, token_found);
+                            } else if(token_found.matches(TokenEnum.ERROR_STRING.getREGEX())){
+                                token = new Token(TokenEnum.ERROR_STRING, count_line, count_column, token_found);
                             } else {
                                 if(token != null){
                                     strAux += file_buffer.toCharArray()[i];
-                                    if((token.getType().getVALUE() == TokenEnum.NUMBER.getVALUE() || token.getType().getVALUE() == TokenEnum.DIGIT.getVALUE()) && strAux.substring(0, 1).matches(TokenEnum.LETTER.getREGEX())){
-                                        token.setType(TokenEnum.ERROR_NUMBER);
-                                        token.setString(token_found);
-                                    } else if((token.getType().getVALUE() == TokenEnum.NUMBER.getVALUE() || token.getType().getVALUE() == TokenEnum.DIGIT.getVALUE()) && strAux.substring(0, 1).matches("\\.")){
-                                        token.setType(TokenEnum.ERROR_NUMBER_FLOAT);
-                                        token.setString(token_found);
-                                    } else if (token.getType().getVALUE() == TokenEnum.ERROR_NUMBER.getVALUE() && (file_buffer.substring(i).matches(TokenEnum.LETTER.getREGEX()) || file_buffer.substring(i).matches(TokenEnum.NUMBER.getREGEX()))){
-                                        token.setString(token_found);
-                                    } else if (token.getType().getVALUE() == TokenEnum.ERROR_NUMBER_FLOAT.getVALUE() && (file_buffer.substring(i).matches(TokenEnum.LETTER.getREGEX()) || file_buffer.substring(i).matches(TokenEnum.NUMBER.getREGEX()))){
-                                        token.setString(token_found);
-                                    } else {
-                                        list_tokens.add(token);
-                                        file_output.append(token.toString() + "\n");
-                                        count_column += token_found.length()-1; // Calculates the actual column.
-                                        token_found = "";
-                                        token = null;
-                                        strAux = "";
-                                        i--;
-                                    }
+                                    list_tokens.add(token);
+                                    file_output.append(token.toString() + "\n");
+                                    count_column += token_found.length()-1; // Calculates the actual column.
+                                    token_found = "";
+                                    token = null;
+                                    strAux = "";
+                                    i--;
+                                } else {
+                                    token = new Token(TokenEnum.ERROR_TOKEN_UNKNOWN, count_line, count_column, token_found);
                                 }
                             }
-                            if(i+1 >= file_buffer.length()){
+                            if(i+1 >= file_buffer.length() && token.getType().getVALUE() != TokenEnum.ERROR_BLOCK_COMMENT.getVALUE()){
                                 list_tokens.add(token);
                                 file_output.append(token.toString() + "\n");
                                 count_column += token_found.length()-1; // Calculates the actual column.
