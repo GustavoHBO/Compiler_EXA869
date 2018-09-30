@@ -22,8 +22,12 @@
 package view;
 
 import controller.Controller;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -38,22 +42,15 @@ import javafx.stage.Stage;
  */
 public class Compiler extends Application {
     
+    Controller controller = Controller.getInstance();
+    
     @Override
     public void start(Stage primaryStage) {
         Button btn = new Button();
         btn.setText("Click here to analyse the files on folder files");
         btn.setOnAction((ActionEvent event) -> {
-            Controller controller = Controller.getInstance();
-            try {
-                controller.analyzeFile("./files/");
-                System.exit(0);
-            } catch (IOException ex) {
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("ERROR Dialog");
-                alert.setHeaderText(null);
-                alert.setContentText("O Arquivo não pode ser lido ou o arquivo de saída não pode ser escrito");
-                alert.showAndWait();
-            }
+            analyzeFilesOnFolder("./files/");
+            //System.exit(0);
         });
         
         StackPane root = new StackPane();
@@ -71,6 +68,39 @@ public class Compiler extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    private void analyzeFilesOnFolder(String file_path){
+        File file = new File(file_path);
+
+        if(file.isDirectory()){
+            FileReader fileReader;
+            BufferedReader bufferedReader;
+            for (String list : file.list()) {
+                if(!list.substring(list.length()-4).equals(".lex")){
+                    Runnable r1;
+                    r1 = () -> {
+                        try {
+                            controller.analyzeFile(file_path, list);
+                            Platform.runLater(() -> {
+                                Alert alert = new Alert(AlertType.INFORMATION);
+                                alert.setTitle("Success");
+                                alert.setHeaderText(null);
+                                alert.setContentText("O arquivo \"" + list + "\" foi analizado com sucesso!\nVeja o arquivo de saída \"" + list.substring(0, list.lastIndexOf(".")) + ".lex\"");
+                                alert.showAndWait();
+                            });
+                        } catch (IOException ex) {
+                            Alert alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("ERROR Dialog");
+                            alert.setHeaderText(null);
+                            alert.setContentText("O Arquivo não pode ser lido ou o arquivo de saída não pode ser escrito");
+                            alert.showAndWait();
+                        }
+                    };
+                    new Thread(r1).start();
+                }
+            }
+        }
     }
     
 }
