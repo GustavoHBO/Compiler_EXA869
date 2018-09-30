@@ -82,6 +82,7 @@ public class Controller {
      * @return ArrayList Token - List with the tokens of the file.
      */
     public ArrayList<Token> analyzeFile(String file_path, String file_name) throws FileNotFoundException, IOException{
+        System.out.println(file_path);
         int count_line = 1;
         int count_column;
         StringBuilder file_output = new StringBuilder("");
@@ -173,7 +174,6 @@ public class Controller {
         }
         bufferedReader.close();
         fileReader.close();
-        saveFileOutput(list_tokens, file_path, file_name);
         return list_tokens;
     }
     
@@ -184,7 +184,7 @@ public class Controller {
      * @param fileName - The file name.
      * @throws IOException - If the file not be save.
      */
-    private void saveFileOutput(ArrayList<Token> list_tokens, String filePath, String fileName) throws FileNotFoundException {
+    public void saveFileOutput(ArrayList<Token> list_tokens, String filePath, String fileName) throws FileNotFoundException {
         
         if(fileName.lastIndexOf(".") != -1){// Look for last . for remove the extension .*
             fileName = fileName.substring(0, fileName.lastIndexOf("."));

@@ -81,7 +81,7 @@ public class Compiler extends Application {
                     Runnable r1;
                     r1 = () -> {
                         try {
-                            controller.analyzeFile(file_path, list);
+                            controller.saveFileOutput(controller.analyzeFile(file_path, list), file_path, list);
                             Platform.runLater(() -> {
                                 Alert alert = new Alert(AlertType.INFORMATION);
                                 alert.setTitle("Success");
