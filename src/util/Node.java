@@ -33,7 +33,6 @@ public class Node {
     
     private HashMap<String, Node> childrens;
     private String value;
-    private 
     
     public Node(String value){
         this.childrens = new HashMap<>();

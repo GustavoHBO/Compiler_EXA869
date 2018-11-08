@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2018 Gustavo Henrique and Marcus Aldrey
  *
@@ -29,27 +30,29 @@ import java.util.HashMap;
  */
 public class SyntheticAnalyzer {
     private HashMap<String, Node> hashMap;
+    private HashMap<String, Node> hashMapProduction;
     
-    public HashMap<String, Node> mountTree(HashMap<String, Node> hashMap){
+    public HashMap<String, Node> mountTree(HashMap<String, Node> hashMap, HashMap<String, Node> hashMapProduction){
         hashMap = new HashMap<>();
-        addProduction(hashMap, "Program", "Class");
+        addProduction(hashMap, hashMapProduction, "Program", "Class");
+        addProduction(hashMap, hashMapProduction, "Program", "Constants");
         
         
         
         return hashMap;
     }
     
-    public void addProduction(HashMap<String, Node> hashMap, String parent, String children){
+    public void addProduction(HashMap<String, Node> hashMap, HashMap<String, Node> hashMapProduction, String parent, String children){
         Node node = hashMap.get(parent);
         if(node == null){
             node = new Node(parent);
-            hashMap.put(parent, node);
+            hashMapProduction.put(parent, node);
         }
         
         Node child = hashMap.get(children);
         if(child == null){
             child = new Node(children);
-            hashMap.put(children, child);
+            hashMapProduction.put(children, child);
         }
         node.add(children, child);
     }
