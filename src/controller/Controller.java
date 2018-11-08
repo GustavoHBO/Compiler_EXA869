@@ -29,8 +29,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.TreeSet;
 import model.Token;
 import util.TokenEnum;
 
@@ -41,6 +40,7 @@ import util.TokenEnum;
 public class Controller {
     
     private ArrayList<Token> list_tokens;
+    private TreeSet<String> tree = new TreeSet<>();
     
     /* Design Pattern Singleton */
     
