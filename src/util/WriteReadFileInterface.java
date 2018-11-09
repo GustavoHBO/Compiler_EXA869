@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2018 Gustavo Henrique and Marcus Aldrey
  *
@@ -22,31 +21,19 @@
  */
 package util;
 
-import java.util.HashMap;
+import exception.FileNotSavedException;
+import java.io.IOException;
+import java.util.ArrayList;
+import model.Token;
 
 /**
  *
- * @author larc
+ * @author gustavo
  */
-public class SyntheticAnalyzer {
-    private HashMap<String, Node> hashMap;
-    private HashMap<String, Node> hashMapProduction;
+public interface WriteReadFileInterface {
     
-    public HashMap<String, Node> mountTree(HashMap<String, Node> hashMap, HashMap<String, Node> hashMapProduction){
-        String[] production;
-        String value;
-        
-        return hashMap;
-    }
-    
-    public void addProduction(HashMap<String, Node> hashMapProduction, String value, String[] production){
-        Node node = hashMapProduction.get(value);
-        if(node == null){
-            node = new Node(value);
-            hashMapProduction.put(value, node); 
-        }
-        node.add(production);
-    }
-    
-    
+    public String readLine() throws IOException;
+    public void saveFile(ArrayList<Token> list_tokens) throws FileNotSavedException;
+    public boolean ready() throws IOException;
+    public void close() throws IOException;
 }

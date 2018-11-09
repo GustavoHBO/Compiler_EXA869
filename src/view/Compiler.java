@@ -22,9 +22,7 @@
 package view;
 
 import controller.Controller;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -74,8 +72,6 @@ public class Compiler extends Application {
         File file = new File(file_path);
 
         if(file.isDirectory()){
-            FileReader fileReader;
-            BufferedReader bufferedReader;
             for (String list : file.list()) {
                 if(!list.substring(list.length()-4).equals(".lex")){
                     Runnable r1;

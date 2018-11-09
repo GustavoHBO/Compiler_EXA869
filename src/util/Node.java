@@ -31,23 +31,24 @@ import java.util.HashMap;
  */
 public class Node {
     
-    private HashMap<String, Node> childrens;
-    private String value;
+    private final HashMap<Integer, String[]> hashProductions;
+    private final String value;
+    private Integer key = 0;
     
     public Node(String value){
-        this.childrens = new HashMap<>();
         this.value = value;
+        this.hashProductions = new HashMap<>();
     }
     
-    public HashMap<String, Node> getChildrens(){
-        return childrens;
+    public HashMap<Integer, String[]> getProductions(){
+        return hashProductions;
     }
     
     public String getValue() {
         return value;
     }
     
-    public void add(String key, Node node){
-        this.childrens.put(key, node);
+    public void add(String[] production){
+        this.hashProductions.put(key++, production);
     }
 }
