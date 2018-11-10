@@ -37,7 +37,7 @@ import util.TokenEnum;
  */
 public class ControllerUnitTest extends TestCase{
     
-    Controller controller = Controller.getInstance();
+    Controller controller;
     ArrayList<Token> list_tokens_keywords_test;
     ArrayList<Token> list_tokens_identifiers_test;
     
@@ -53,6 +53,7 @@ public class ControllerUnitTest extends TestCase{
     }
     
     @Before
+    @Override
     public void setUp() {
         list_tokens_keywords_test = new ArrayList<>();
         int i = 1;
@@ -162,10 +163,11 @@ public class ControllerUnitTest extends TestCase{
     //
     @Test
     public void testAnalyzeFileKeywords() {
-        String file_path = "./test/";
+        String filePath = "./test/";
         Token token_test, token;
         try {
-            ArrayList<Token> list_tokens = controller.analyzeFile(file_path, "ControllerUnitTestKeywords.txt");
+            controller = new Controller(filePath, "ControllerUnitTestKeywords.txt");
+            ArrayList<Token> list_tokens = controller.getTokens();
             assertEquals(list_tokens_keywords_test.size(), list_tokens.size());
             for (int i = 0; i < list_tokens_keywords_test.size(); i++) {
                 token_test = list_tokens_keywords_test.get(i);
@@ -182,10 +184,11 @@ public class ControllerUnitTest extends TestCase{
     
     @Test
     public void testAnalyzeFileIndentifiers() {
-        String file_path = "./test/";
+        String filePath = "./test/";
         Token token_test, token;
         try {
-            ArrayList<Token> list_tokens = controller.analyzeFile(file_path, "ControllerUnitTestIdentifiers.txt");
+            controller = new Controller(filePath, "ControllerUnitTestIdentifiers.txt");
+            ArrayList<Token> list_tokens = controller.getTokens();
             assertEquals(list_tokens_identifiers_test.size(), list_tokens.size());
             for (int i = 0; i < list_tokens_identifiers_test.size(); i++) {
                 System.out.println(i);
