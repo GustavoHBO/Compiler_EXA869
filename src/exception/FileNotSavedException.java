@@ -27,14 +27,14 @@ package exception;
  */
 public class FileNotSavedException extends Exception{
 
-    private String cause;
+    private final String name;
     
-    public FileNotSavedException(String cause){
-        this.cause = cause;
+    public FileNotSavedException(String name){
+        this.name = name;
     }
 
     @Override
     public String getMessage() {
-        return "The file not be found: " + cause; //To change body of generated methods, choose Tools | Templates.
+        return "The file not be found: " + name; //To change body of generated methods, choose Tools | Templates.
     }
 }

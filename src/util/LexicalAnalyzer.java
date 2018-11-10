@@ -21,123 +21,138 @@
  */
 package util;
 
+import exception.FileNotLexicalAnalyzerException;
 import exception.FileNotSavedException;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import model.Token;
 
 /**
- *
- * @author gustavo
+ * The layer from the lexical analysis. This class allow get the list of tokens from actual file and save them.
+ * @author Gustavo Henrique.
  */
 public class LexicalAnalyzer {
     
-    private final String file_path;
-    private final String file_name;
-    private ArrayList<Token> listTokens;
+    private final String fileName;
+    private ArrayList<Token> listTokens = null;
     private final WriteReadFile wrFile;
 
-    
-    public LexicalAnalyzer(String file_path, String file_name) throws FileNotFoundException{
-        this.file_path = file_path;
-        this.file_name = file_name;
-        this.wrFile = new WriteReadFile(file_path, file_name);
+    /**
+     *  Constructor of the class, need the file path and file name from archive.
+     * @param filePath - The file path.
+     * @param fileName - The file name.
+     * @throws FileNotFoundException - Case the file not exists.
+     */
+    public LexicalAnalyzer(String filePath, String fileName) throws FileNotFoundException{
+        this.fileName = fileName;
+        this.wrFile = new WriteReadFile(filePath, fileName);
     }
     
     /**
      * Using the file path for read all archives on folder and analyze these files.
-     * @throws java.io.IOException - If the file not be read.
      * @throws java.io.FileNotFoundException - If the file not exist.
      */
-    public void analyzeFile() throws FileNotFoundException, IOException{
-        int count_line = 1;
-        int count_column;
-        StringBuilder file_output = new StringBuilder("");
-        String token_found = "";
-        String file_buffer;
+    public void analyzeFile() throws FileNotFoundException{
+        int countLine = 1;
+        int countColumn;
+        StringBuilder fileOutput = new StringBuilder("");
+        String tokenFound = "";
+        String fileBuffer;
         Token token = null;
-        ArrayList<Token> list_tokens = new ArrayList<>();
+        this.listTokens = new ArrayList<>();
         
         while(wrFile.ready()){
-            file_buffer = wrFile.readLine();
-            count_column = 0;
-            for(int i = 0; i < file_buffer.length(); i++){
-                token_found += file_buffer.toCharArray()[i];
-                if(token_found.matches(TokenEnum.KEYWORD.getREGEX())){
-                    token = new Token(TokenEnum.KEYWORD, count_line, count_column, token_found);
-                } else if (token_found.matches(TokenEnum.IDENTIFIER.getREGEX())){
-                    token = new Token(TokenEnum.IDENTIFIER, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.DIGIT.getREGEX())){
-                    token = new Token(TokenEnum.DIGIT, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.NUMBER.getREGEX())){
-                    token = new Token(TokenEnum.NUMBER, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.LETTER.getREGEX())){
-                    token = new Token(TokenEnum.LETTER, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.ARITHMETIC_OPERATOR.getREGEX())){
-                    token = new Token(TokenEnum.ARITHMETIC_OPERATOR, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.RELATIONAL_OPERATOR.getREGEX())){
-                    token = new Token(TokenEnum.RELATIONAL_OPERATOR, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.LOGICAL_OPERATOR.getREGEX())){
-                    token = new Token(TokenEnum.LOGICAL_OPERATOR, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.LINE_COMMENT.getREGEX())){
-                    token = new Token(TokenEnum.LINE_COMMENT, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.BLOCK_COMMENT.getREGEX())){
-                    token = new Token(TokenEnum.BLOCK_COMMENT, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.DELIMITER.getREGEX())){
-                    token = new Token(TokenEnum.DELIMITER, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.STRING.getREGEX()) && token != null && !token.getType().equals(TokenEnum.STRING)){
-                    token = new Token(TokenEnum.STRING, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.SYMBOL.getREGEX())){
-                    token = new Token(TokenEnum.SYMBOL, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.SPACE.getREGEX())){
-                    token = new Token(TokenEnum.SPACE, count_line, count_column, token_found);
+            fileBuffer = wrFile.readLine();
+            countColumn = 0;
+            for(int i = 0; i < fileBuffer.length(); i++){ // The loop will get chat-by-char to search the match in the following combinations.
+                tokenFound += fileBuffer.toCharArray()[i];
+                if(tokenFound.matches(TokenEnum.KEYWORD.getREGEX())){// Verify is the token found is a keyword.
+                    token = new Token(TokenEnum.KEYWORD, countLine, countColumn, tokenFound);
+                } else if (tokenFound.matches(TokenEnum.IDENTIFIER.getREGEX())){// Verify is the token found is an identifier.
+                    token = new Token(TokenEnum.IDENTIFIER, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.DIGIT.getREGEX())){// Verify is the token found is a digit.
+                    token = new Token(TokenEnum.DIGIT, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.NUMBER.getREGEX())){// Verify is the token found is a number.
+                    token = new Token(TokenEnum.NUMBER, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.LETTER.getREGEX())){// Verify is the token found is a letter.
+                    token = new Token(TokenEnum.LETTER, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.ARITHMETIC_OPERATOR.getREGEX())){// Verify is the token found is an arithmetic operator.
+                    token = new Token(TokenEnum.ARITHMETIC_OPERATOR, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.RELATIONAL_OPERATOR.getREGEX())){// Verify is the token found is a relational operator.
+                    token = new Token(TokenEnum.RELATIONAL_OPERATOR, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.LOGICAL_OPERATOR.getREGEX())){// Verify is the token found is a logical operator.
+                    token = new Token(TokenEnum.LOGICAL_OPERATOR, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.LINE_COMMENT.getREGEX())){// Verify is the token found is a line comment.
+                    token = new Token(TokenEnum.LINE_COMMENT, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.BLOCK_COMMENT.getREGEX())){// Verify is the token found is a block comment.
+                    token = new Token(TokenEnum.BLOCK_COMMENT, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.DELIMITER.getREGEX())){// Verify is the token found is a delimiter.
+                    token = new Token(TokenEnum.DELIMITER, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.STRING.getREGEX()) && token != null && !token.getType().equals(TokenEnum.STRING)){// Verify is the token found is a string.
+                    token = new Token(TokenEnum.STRING, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.SYMBOL.getREGEX())){// Verify is the token found is a symbol.
+                    token = new Token(TokenEnum.SYMBOL, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.SPACE.getREGEX())){// Verify is the token found is a space.
+                    token = new Token(TokenEnum.SPACE, countLine, countColumn, tokenFound);
                 } 
 
                     /* The next section identifies possible errors of bad token formation */
 
-                else if(token_found.matches(TokenEnum.ERROR_NUMBER.getREGEX())){
-                    token = new Token(TokenEnum.ERROR_NUMBER, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.ERROR_NUMBER_FLOAT.getREGEX())){
-                    token = new Token(TokenEnum.ERROR_NUMBER_FLOAT, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.ERROR_BLOCK_COMMENT.getREGEX())){
-                    token = new Token(TokenEnum.ERROR_BLOCK_COMMENT, count_line, count_column, token_found);
-                } else if(token_found.matches(TokenEnum.ERROR_STRING.getREGEX())){
-                    token = new Token(TokenEnum.ERROR_STRING, count_line, count_column, token_found);
-                } else {
-                    if(token != null){
-                        list_tokens.add(token);
-                        file_output.append(token.toString()).append("\n");
-                        count_column += token_found.length()-1; // Calculates the actual column.
-                        token_found = "";
+                else if(tokenFound.matches(TokenEnum.ERROR_NUMBER.getREGEX())){// Verify is the token found is a number wrong.
+                    token = new Token(TokenEnum.ERROR_NUMBER, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.ERROR_NUMBER_FLOAT.getREGEX())){// Verify is the token found is a float number wrong.
+                    token = new Token(TokenEnum.ERROR_NUMBER_FLOAT, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.ERROR_BLOCK_COMMENT.getREGEX())){// Verify is the token found is a comment block wrong.
+                    token = new Token(TokenEnum.ERROR_BLOCK_COMMENT, countLine, countColumn, tokenFound);
+                } else if(tokenFound.matches(TokenEnum.ERROR_STRING.getREGEX())){// Verify is the token found is a string wrong.
+                    token = new Token(TokenEnum.ERROR_STRING, countLine, countColumn, tokenFound);
+                } else {//If the token not match with any previous combinations the analyze change:
+                    if(token != null){// If the token match with some combination, this token is saved.
+                        listTokens.add(token);
+                        fileOutput.append(token.toString()).append("\n");
+                        countColumn += tokenFound.length()-1; // Calculates the actual column.
+                        tokenFound = "";
                         token = null;
-                        i--;
-                    } else {
-                        token = new Token(TokenEnum.ERROR_TOKEN_UNKNOWN, count_line, count_column, token_found);
+                        i--;// Ignore the actual charactere, will read any they in next loop.
+                    } else {// Case the token not have any match, this token is unknown, it is add in next loop(the previous 'if')
+                        token = new Token(TokenEnum.ERROR_TOKEN_UNKNOWN, countLine, countColumn, tokenFound);
                     }
                 }
-                if(i+1 >= file_buffer.length() && token != null && token.getType().getVALUE() != TokenEnum.ERROR_BLOCK_COMMENT.getVALUE()){
-                    list_tokens.add(token);
-                    file_output.append(token.toString()).append("\n");
-                    count_column += token_found.length()-1; // Calculates the actual column.
-                    token_found = "";
+                // Verify if the actual line is the last line of the file, save the actual file. The errors on comment block are save on previous 'else'.
+                if(i+1 >= fileBuffer.length() && token != null && token.getType().getVALUE() != TokenEnum.ERROR_BLOCK_COMMENT.getVALUE()){
+                    listTokens.add(token);
+                    fileOutput.append(token.toString()).append("\n");
+                    countColumn += tokenFound.length()-1; // Calculates the actual column.
+                    tokenFound = "";
                     token = null;
                 }
             }
-            count_line++;
+            countLine++;
         }
         if(token != null){
-            list_tokens.add(token);
+            listTokens.add(token);
         }
         wrFile.close();
-        this.listTokens = list_tokens;
     }
     
-    public ArrayList<Token> getTokens(){
+    /**
+     * Return the list of tokens
+     * @return listTokens - The actual list of tokens.
+     */
+    public ArrayList<Token> getTokens() {
         return this.listTokens;
     }
     
-    public void saveFile() throws FileNotSavedException{
-        wrFile.saveFile(this.listTokens);
+    /**
+     * Save the output from lexical analyzer.
+     * @throws FileNotSavedException - Case the file not be saved.
+     * @throws FileNotLexicalAnalyzerException - If the list of tokens not exists.
+     */
+    public void saveFile() throws FileNotSavedException, FileNotLexicalAnalyzerException{
+        if(this.listTokens != null){
+            wrFile.saveFile(this.listTokens);
+        } else {
+            throw new FileNotLexicalAnalyzerException(fileName);
+        }
     }
 }

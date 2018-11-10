@@ -21,72 +21,88 @@
  */
 package controller;
 
+import exception.FileNotLexicalAnalyzerException;
 import exception.FileNotSavedException;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import model.Token;
 import util.LexicalAnalyzer;
 
 /**
- *
- * @author gustavo
+ * This controller manage the layers of analyzer from the compiler. Such file will have yourself controller, as such analyzer not need be sync between other files
+ * the analyze will run alone.
+ * @author Gustavo Henrique.
  */
 public class Controller {
     
-    LexicalAnalyzer lexAnalyzer;
-    
-    /* Design Pattern Singleton */
-    
-    private static Controller controller; // Statement controller.
+    private final String fileName;
+    private final String filePath;
+    private LexicalAnalyzer lexAnalyzer;
     
     /**
-     * The constructor is private for use the singleton
+     * The controller for file, it will can running the analyzer the files.
+     * @param filePath - File path.
+     * @param fileName - File name.
+     * @throws java.io.FileNotFoundException - If the file not be founded.
      */
-    private Controller(){
-    }
-    
-    /**
-     * Return the instance of controller.
-     * @return controller - An instance.
-     */
-    public static Controller getInstance(){
-        if(controller == null){
-            controller = new Controller();
-        }
-        return controller;
-    }
-    
-    /**
-     * Reset the controller.
-     */
-    public static void resetController(){
-        controller = null;
+    public Controller(String filePath, String fileName) throws FileNotFoundException{
+        this.filePath = filePath;
+        this.fileName = fileName;
+        this.lexAnalyzer = getLexicalAnalyzer();
     }
 
     /*-------------------------------------------------Public Methods-----------------------------------------------------------------*/
+
+    /**
+     * Run the analyzer from the file creating the list of tokens.
+     * @throws FileNotFoundException - Case the file not exists.
+     */
+    public void analyzeFile() throws FileNotFoundException{
+        this.lexAnalyzer.analyzeFile();
+    }
+    
+    /**
+     * Get the list of tokens from actual file.
+     * @return listTokens - List of tokens generated from the lexical analyzer.
+     * @throws java.io.FileNotFoundException - Case the file analyzer not exists.
+     */
+    public ArrayList<Token> getTokens() throws FileNotFoundException{
+        return lexAnalyzer.getTokens();
+    }
+    
+    /**
+     * Save the list of tokens from the actual file, case not exist will throw the exception to run the analyzer lexical first. If the list of 
+     * tokens not be saved will throw the exception FileNotSavedException.
+     * @throws FileNotSavedException - Case the file not be saved.
+     * @throws FileNotLexicalAnalyzerException - Case the list of tokens not exists, run the method analyzeFile before.
+     */
+    public void saveTokens() throws FileNotSavedException, FileNotLexicalAnalyzerException{
+        saveTokensFile();
+    }
+    
+    /*-------------------------------------------------Private Methods-----------------------------------------------------------------*/
+
                                     
                                       /*--------------Lexical Methods------------------------*/
     
     /**
      * Using the file path for read all archives on folder and analyze these files.
-     * @param file_path - File path.
-     * @param file_name - File name.
+     
      * @throws java.io.IOException - If the file not be read.
      * @throws java.io.FileNotFoundException - If the file not exist.
      * @return ArrayList Token - List with the tokens of the file.
      */
-    public LexicalAnalyzer getLexicalAnalyzer(String file_path, String file_name) throws FileNotFoundException, IOException{
-        lexAnalyzer = new LexicalAnalyzer(file_path, file_name);
+    private LexicalAnalyzer getLexicalAnalyzer() throws FileNotFoundException{
+        lexAnalyzer = new LexicalAnalyzer(filePath, fileName);
         lexAnalyzer.analyzeFile();
-        return new LexicalAnalyzer(file_path, file_name);
+        return new LexicalAnalyzer(filePath, fileName);
     }
     
     /**
      * Save the list of tokens in a file with extension .lex
      * @throws exception.FileNotSavedException - If the file not be saved.
      */
-    public void saveTokensFile() throws FileNotSavedException {
+    private void saveTokensFile() throws FileNotSavedException, FileNotLexicalAnalyzerException {
         this.lexAnalyzer.saveFile();
     }
 }

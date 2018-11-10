@@ -33,39 +33,72 @@ import java.util.ArrayList;
 import model.Token;
 
 /**
- *
- * @author gustavo
+ * Class to handle with read and write files from compiler, the methods are creates to write output from layers of the compiler.
+ * @author Gustavo Henrique.
  */
 public class WriteReadFile implements WriteReadFileInterface{
 
     private final File file;
     private final FileReader fileReader;
     private final BufferedReader bufferedReader;
-    private final String file_path;
-    private final String file_name;
+    private final String filePath;
+    private final String fileName;
     
-    public WriteReadFile(String file_path, String file_name) throws FileNotFoundException{
-        this.file_path = file_path;
-        this.file_name = file_name;
-        this.file = new File(file_path+file_name);
-        fileReader = new FileReader(this.file);
-        bufferedReader = new BufferedReader(fileReader);
+    /**
+     * Constructor of the class, use the file path and file name to read and write on file.
+     * @param filePath - File path.
+     * @param fileName - File name.
+     * @throws FileNotFoundException - Case the file not exists.
+     */
+    public WriteReadFile(String filePath, String fileName) throws FileNotFoundException{
+        this.filePath = filePath;
+        this.fileName = fileName;
+        this.file = new File(filePath+fileName);
+        this.fileReader = new FileReader(this.file);
+        this.bufferedReader = new BufferedReader(this.fileReader);
+
     }
     
+    /**
+     * Read one line from file.
+     * @return lineRead - Line read from file.
+     * @throws FileNotFoundException - Case the file not exists.
+     */
     @Override
-    public String readLine() throws IOException {
-        return bufferedReader.readLine();
+    public String readLine() throws FileNotFoundException {
+        try {
+            return bufferedReader.readLine();
+        } catch (IOException ex) {
+            throw new FileNotFoundException();
+        }
     }
 
+    /**
+     * Verify is the file is ready to operations.
+     * @return true - Case the file is ready, false - Case the file isn't read.
+     * @throws FileNotFoundException - Case the file not exists.
+     */
     @Override
-    public boolean ready() throws IOException {
-        return bufferedReader.ready();
+    public boolean ready() throws FileNotFoundException {
+        try {
+            return bufferedReader.ready();
+        } catch (IOException ex) {
+            throw new FileNotFoundException();
+        }
     }
 
+    /**
+     * Close the file and save the editions.
+     * @throws FileNotFoundException
+     */
     @Override
-    public void close() throws IOException {
-        bufferedReader.close();
-        fileReader.close();
+    public void close() throws FileNotFoundException {
+        try {
+            bufferedReader.close();
+            fileReader.close();
+        } catch (IOException ex) {
+            throw new FileNotFoundException();
+        }
     }
 
     /**
@@ -76,16 +109,16 @@ public class WriteReadFile implements WriteReadFileInterface{
     @Override
     public void saveFile(ArrayList<Token> list_tokens) throws FileNotSavedException {
         String name = "default";
-        if(file_name.lastIndexOf(".") != -1){// Look for last . for remove the extension .*
-            name = file_name.substring(0, file_name.lastIndexOf("."));
+        if(fileName.lastIndexOf(".") != -1){// Look for last . for remove the extension .*
+            name = fileName.substring(0, fileName.lastIndexOf("."));
         }
         
-        File file = new File(file_path + name + ".lex");
-        if(file.exists()){
-            file.delete();
+        File fileOutput = new File(filePath + name + ".lex");
+        if(fileOutput.exists()){
+            fileOutput.delete();
         }
         
-        try (FileWriter fileWriter = new FileWriter(file); PrintWriter filePrinter = new PrintWriter(fileWriter)) {//Write the file.
+        try (FileWriter fileWriter = new FileWriter(fileOutput); PrintWriter filePrinter = new PrintWriter(fileWriter)) {//Write the file.
             list_tokens.forEach((list_token) -> {
                 filePrinter.println(list_token.toString());
             });

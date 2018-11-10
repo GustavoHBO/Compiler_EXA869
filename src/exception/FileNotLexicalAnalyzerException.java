@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2018 Gustavo Henrique and Marcus Aldrey
  *
@@ -20,33 +19,22 @@
  *
  * See the original project in: <https://github.com/GustavoHBO/Compiler_EXA869>.
  */
-package util;
-
-import java.util.HashMap;
+package exception;
 
 /**
  *
- * @author Gustavo Henrique.
+ * @author gustavo
  */
-public class SyntheticAnalyzer {
-    private HashMap<String, Node> hashMap;
-    private HashMap<String, Node> hashMapProduction;
+public class FileNotLexicalAnalyzerException extends Exception{
     
-    public HashMap<String, Node> mountTree(HashMap<String, Node> hashMap, HashMap<String, Node> hashMapProduction){
-        String[] production;
-        String value;
-        
-        return hashMap;
+    private final String name;
+    
+    public FileNotLexicalAnalyzerException(String name){
+        this.name = name;
     }
-    
-    public void addProduction(HashMap<String, Node> hashMapProduction, String value, String[] production){
-        Node node = hashMapProduction.get(value);
-        if(node == null){
-            node = new Node(value);
-            hashMapProduction.put(value, node); 
-        }
-        node.add(production);
+
+    @Override
+    public String getMessage() {
+        return "The file not be found: " + name; //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
 }

@@ -22,8 +22,10 @@
 package view;
 
 import controller.Controller;
+import exception.FileNotLexicalAnalyzerException;
+import exception.FileNotSavedException;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -35,13 +37,15 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
+ * This class allow the user use this compile easily.
  *
- * @author gustavo
+ * @author Gustavo Henrique.
  */
 public class Compiler extends Application {
-    
-    Controller controller = Controller.getInstance();
-    
+
+    private int qnt = 0; // Threads actual.
+    private final int QNTM = 0; // Max of thread running in same time.
+
     @Override
     public void start(Stage primaryStage) {
         Button btn = new Button();
@@ -50,12 +54,12 @@ public class Compiler extends Application {
             analyzeFilesOnFolder("./files/");
             //System.exit(0);
         });
-        
+
         StackPane root = new StackPane();
         root.getChildren().add(btn);
-        
+
         Scene scene = new Scene(root, 600, 500);
-        
+
         primaryStage.setTitle("Compiler");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -67,36 +71,93 @@ public class Compiler extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
-    private void analyzeFilesOnFolder(String file_path){
-        File file = new File(file_path);
 
-        if(file.isDirectory()){
-            for (String list : file.list()) {
-                if(!list.substring(list.length()-4).equals(".lex")){
+    private void analyzeFilesOnFolder(String filePath) {
+        File file = new File(filePath);
+        if (file.isDirectory()) {// If a folder will be analyzed.
+            for (String fileName : file.list()) {
+                while (qnt > QNTM) {
+                    //Wait the threads finish to run more.
+                }
+                if (!fileName.substring(fileName.length() - 4).equals(".lex")) {
                     Runnable r1;
                     r1 = () -> {
                         try {
-                            controller.saveFileOutput(controller.analyzeFile(file_path, list), file_path, list);
+                            Controller controller = new Controller(filePath, fileName);
+                            qnt++;
+                            controller.analyzeFile();
+                            controller.saveTokens();
+                            qnt--;
                             Platform.runLater(() -> {
                                 Alert alert = new Alert(AlertType.INFORMATION);
                                 alert.setTitle("Success");
                                 alert.setHeaderText(null);
-                                alert.setContentText("O arquivo \"" + list + "\" foi analizado com sucesso!\nVeja o arquivo de saída \"" + list.substring(0, list.lastIndexOf(".")) + ".lex\"");
+                                alert.setContentText("O arquivo \"" + fileName + "\" foi analizado com sucesso!\nVeja o arquivo de saída \"" + fileName.substring(0, fileName.lastIndexOf(".")) + ".lex\"");
                                 alert.showAndWait();
                             });
-                        } catch (IOException ex) {
+                        } catch (FileNotSavedException ex) {
                             Alert alert = new Alert(AlertType.ERROR);
                             alert.setTitle("ERROR Dialog");
                             alert.setHeaderText(null);
-                            alert.setContentText("O Arquivo não pode ser lido ou o arquivo de saída não pode ser escrito");
+                            alert.setContentText("O arquivo de saída não pôde ser escrito");
+                            alert.showAndWait();
+                        } catch (FileNotLexicalAnalyzerException ex) {
+                            Alert alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("ERROR Dialog");
+                            alert.setHeaderText(null);
+                            alert.setContentText("O arquivo " + fileName + " ainda não foi analizado");
+                            alert.showAndWait();
+                        } catch (FileNotFoundException ex) {
+                            Alert alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("ERROR Dialog");
+                            alert.setHeaderText(null);
+                            alert.setContentText("O a ser analizado não foi encontrado");
                             alert.showAndWait();
                         }
                     };
                     new Thread(r1).start();
                 }
             }
+        } else { // If only a file will be anylized.
+            String fileName = filePath.substring(filePath.lastIndexOf("/"));
+            if (!fileName.substring(fileName.length() - 4).equals(".lex")) {
+                Runnable r1;
+                r1 = () -> {
+                    try {
+                        Controller controller = new Controller(filePath.substring(0, filePath.lastIndexOf("/")), fileName);
+                        qnt++;
+                        controller.analyzeFile();
+                        controller.saveTokens();
+                        qnt--;
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(AlertType.INFORMATION);
+                            alert.setTitle("Success");
+                            alert.setHeaderText(null);
+                            alert.setContentText("O arquivo \"" + fileName + "\" foi analizado com sucesso!\nVeja o arquivo de saída \"" + fileName.substring(0, fileName.lastIndexOf(".")) + ".lex\"");
+                            alert.showAndWait();
+                        });
+                    } catch (FileNotSavedException ex) {
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("ERROR Dialog");
+                        alert.setHeaderText(null);
+                        alert.setContentText("O arquivo de saída não pôde ser escrito");
+                        alert.showAndWait();
+                    } catch (FileNotLexicalAnalyzerException ex) {
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("ERROR Dialog");
+                        alert.setHeaderText(null);
+                        alert.setContentText("O arquivo " + fileName + " ainda não foi analizado");
+                        alert.showAndWait();
+                    } catch (FileNotFoundException ex) {
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("ERROR Dialog");
+                        alert.setHeaderText(null);
+                        alert.setContentText("O a ser analizado não foi encontrado");
+                        alert.showAndWait();
+                    }
+                };
+                new Thread(r1).start();
+            }
         }
     }
-    
 }
