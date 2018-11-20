@@ -276,30 +276,49 @@ public class Grammar implements IGrammar {
 
     public void addProductor(String production, String productor) {
         Node node = this.grammar.get(production);
-        if(node == null){
-            this.grammar.put(production, null);
+        if (node == null) {
+            this.grammar.put(production, new Node(production));
             node = this.grammar.get(production);
         }
         node.addFollow(productor);
     }
 
-    public ArrayList<String> getFirst(String p) {
-        ArrayList<String> arrayList = new ArrayList<>();
+    public HashMap<String, String> getFirst(String p) {
+        HashMap<String, String> hashMapProductor = new HashMap<>();
+        HashMap<String, String> hashMapProduction;
+        if (isTerminal(p)) {
+            hashMapProductor.put(p, p);
+            return hashMapProductor;
+        }
         Node productor = this.grammar.get(p);
+        if(productor == null){
+            return null;
+        }
         for (String[] production : productor.getProductions()) {
             for (String string : production) {
                 if (isTerminal(string)) {
-                    arrayList.add(string);
+                    hashMapProductor.put(string, string);
                     break;
                 } else {
-                    getFirst(string);
+                    if(p.equals(string)){
+                        break;
+                    }
+                    hashMapProduction = getFirst(string);
+                    if(hashMapProduction == null){
+                        hashMapProduction = new HashMap<>();
+                        return hashMapProduction;
+                    }
+                    hashMapProductor.putAll(hashMapProduction);
                 }
             }
         }
-        return null;
+        return hashMapProductor;
     }
 
     private boolean isTerminal(String token) {
+        if(token.equals("")){
+            return true;
+        }
         return !(token.charAt(0) == '<' && token.charAt(token.length() - 1) == '>');
     }
 }

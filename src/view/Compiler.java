@@ -27,7 +27,8 @@ import exception.FileNotLexicalAnalyzerException;
 import exception.FileNotSavedException;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -37,7 +38,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import util.Grammar;
 
 /**
  * This class allow the user use this compile easily.
@@ -51,13 +51,14 @@ public class Compiler extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        /*Testes*/
-        Grammar grammar = new Grammar();
-        grammar.getGrammar();
-
-        for (Iterator<String> iterator = grammar.getFirst("<Value>").iterator(); iterator.hasNext();) {
-            String next = iterator.next();
-            System.out.println(next);
+        try {
+            /*Testes*/
+            Controller controller = new Controller("./files/", "code.cd");
+            controller.debugPrintGrammar();
+            controller.debugGrammarFirst("<Post-Else-Block>");
+            System.out.println("Análise Finalizada");
+        } catch (FileNotFoundException ex) {
+            System.out.println("");
         }
         /*Testes*/
         Button btn = new Button();
