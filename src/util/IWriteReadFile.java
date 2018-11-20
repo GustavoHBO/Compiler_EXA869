@@ -20,22 +20,21 @@
  *
  * See the original project in: <https://github.com/GustavoHBO/Compiler_EXA869>.
  */
-package exception;
+package util;
+
+import exception.FileNotSavedException;
+import java.io.IOException;
+import java.util.ArrayList;
+import model.Token;
 
 /**
  *
  * @author gustavo
  */
-public class FileNotSavedException extends Exception{
-
-    private final String name;
+public interface IWriteReadFile {
     
-    public FileNotSavedException(String name){
-        this.name = name;
-    }
-
-    @Override
-    public String getMessage() {
-        return "The file not be found: " + name; //To change body of generated methods, choose Tools | Templates.
-    }
+    public String readLine() throws IOException;
+    public void saveFile(ArrayList<Token> list_tokens) throws FileNotSavedException;
+    public boolean ready() throws IOException;
+    public void close() throws IOException;
 }

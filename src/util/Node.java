@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2018 Gustavo Henrique and Marcus Aldrey
  *
  * This program is free software: you can redistribute it and/or modify
@@ -30,25 +30,35 @@ import java.util.HashMap;
  * @author Marcos Vinícius
  */
 public class Node {
-    
-    private final HashMap<Integer, String[]> hashProductions;
+
+    private String[][] productions;
+    private final HashMap<String, String> productorMap;
     private final String value;
-    private Integer key = 0;
-    
-    public Node(String value){
+
+    public Node(String value) {
+        this.productorMap = new HashMap<>();
         this.value = value;
-        this.hashProductions = new HashMap<>();
     }
-    
-    public HashMap<Integer, String[]> getProductions(){
-        return hashProductions;
+
+    public Node(String value, String[][] productions) {
+        this.productorMap = new HashMap<>();
+        this.value = value;
+        this.productions = productions;
     }
-    
+
     public String getValue() {
         return value;
     }
+
+    public String[][] getProductions() {
+        return productions;
+    }
+
+    public void setProductions(String[][] production) {
+        this.productions = production;
+    }
     
-    public void add(String[] production){
-        this.hashProductions.put(key++, production);
+    public void addFollow(String follow){
+        this.productorMap.put(follow, follow);
     }
 }

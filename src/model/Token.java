@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Contact us:	Gustavo Henrique	-	ghboliveira@hotmail.com
+ * 		Marcos Vinícius		-	marcosviniciuscl@outlook.com
  * 		Marcus Aldrey		-	marcusaldrey@gmail.com
  *
  * See the original project in: <https://github.com/GustavoHBO/Compiler_EXA869>.

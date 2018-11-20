@@ -1,5 +1,4 @@
-
-/*
+/* 
  * Copyright (C) 2018 Gustavo Henrique and Marcus Aldrey
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Contact us:	Gustavo Henrique	-	ghboliveira@hotmail.com
+ * 		Marcos Vinícius		-	marcosviniciuscl@outlook.com
  * 		Marcus Aldrey		-	marcusaldrey@gmail.com
  *
  * See the original project in: <https://github.com/GustavoHBO/Compiler_EXA869>.
@@ -39,14 +39,7 @@ public class SyntheticAnalyzer {
         return hashMap;
     }
     
-    public void addProduction(HashMap<String, Node> hashMapProduction, String value, String[] production){
-        Node node = hashMapProduction.get(value);
-        if(node == null){
-            node = new Node(value);
-            hashMapProduction.put(value, node); 
-        }
-        node.add(production);
-    }
+    
     
     
 }

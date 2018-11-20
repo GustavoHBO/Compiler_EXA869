@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Contact us:	Gustavo Henrique	-	ghboliveira@hotmail.com
+ * 		Marcos Vinícius		-	marcosviniciuscl@outlook.com
  * 		Marcus Aldrey		-	marcusaldrey@gmail.com
  *
  * See the original project in: <https://github.com/GustavoHBO/Compiler_EXA869>.
@@ -26,6 +27,7 @@ import exception.FileNotLexicalAnalyzerException;
 import exception.FileNotSavedException;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Iterator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -35,6 +37,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import util.Grammar;
 
 /**
  * This class allow the user use this compile easily.
@@ -48,6 +51,15 @@ public class Compiler extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        /*Testes*/
+        Grammar grammar = new Grammar();
+        grammar.getGrammar();
+
+        for (Iterator<String> iterator = grammar.getFirst("<Value>").iterator(); iterator.hasNext();) {
+            String next = iterator.next();
+            System.out.println(next);
+        }
+        /*Testes*/
         Button btn = new Button();
         btn.setText("Click here to analyse the files on folder files");
         btn.setOnAction((ActionEvent event) -> {
@@ -83,6 +95,7 @@ public class Compiler extends Application {
                     Runnable r1;
                     r1 = () -> {
                         try {
+
                             Controller controller = new Controller(filePath, fileName);
                             qnt++;
                             controller.analyzeFile();

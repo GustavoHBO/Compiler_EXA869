@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2018 Gustavo Henrique and Marcus Aldrey
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,25 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Contact us:	Gustavo Henrique	-	ghboliveira@hotmail.com
+ * 		Marcos Vinícius		-	marcosviniciuscl@outlook.com
  * 		Marcus Aldrey		-	marcusaldrey@gmail.com
  *
  * See the original project in: <https://github.com/GustavoHBO/Compiler_EXA869>.
  */
 package util;
 
-import exception.FileNotSavedException;
-import java.io.IOException;
-import java.util.ArrayList;
-import model.Token;
+import java.util.HashMap;
 
 /**
  *
  * @author gustavo
  */
-public interface WriteReadFileInterface {
+public interface IGrammar {
     
-    public String readLine() throws IOException;
-    public void saveFile(ArrayList<Token> list_tokens) throws FileNotSavedException;
-    public boolean ready() throws IOException;
-    public void close() throws IOException;
+    public HashMap<String, Node> getGrammar();
 }

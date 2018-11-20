@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2018 Gustavo Henrique and Marcus Aldrey
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Contact us:	Gustavo Henrique	-	ghboliveira@hotmail.com
+ * 		Marcos Vinícius		-	marcosviniciuscl@outlook.com
  * 		Marcus Aldrey		-	marcusaldrey@gmail.com
  *
  * See the original project in: <https://github.com/GustavoHBO/Compiler_EXA869>.
@@ -36,7 +37,7 @@ import model.Token;
  * Class to handle with read and write files from compiler, the methods are creates to write output from layers of the compiler.
  * @author Gustavo Henrique.
  */
-public class WriteReadFile implements WriteReadFileInterface{
+public class WriteReadFile implements IWriteReadFile{
 
     private final File file;
     private final FileReader fileReader;
@@ -57,6 +58,19 @@ public class WriteReadFile implements WriteReadFileInterface{
         this.fileReader = new FileReader(this.file);
         this.bufferedReader = new BufferedReader(this.fileReader);
 
+    }
+    
+    /**
+     * Constructor of the class, use the file path and file name to read and write on file.
+     * @param url - URL from the file.
+     * @throws FileNotFoundException - Case the file not exists.
+     */
+    public WriteReadFile(String url) throws FileNotFoundException{
+        this.filePath = "";
+        this.fileName = url;
+        this.file = new File(filePath+fileName);
+        this.fileReader = new FileReader(this.file);
+        this.bufferedReader = new BufferedReader(this.fileReader);
     }
     
     /**

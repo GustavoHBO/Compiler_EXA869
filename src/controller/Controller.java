@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Contact us:	Gustavo Henrique	-	ghboliveira@hotmail.com
+ * 		Marcos Vinícius		-	marcosviniciuscl@outlook.com
  * 		Marcus Aldrey		-	marcusaldrey@gmail.com
  *
  * See the original project in: <https://github.com/GustavoHBO/Compiler_EXA869>.
@@ -25,8 +26,10 @@ import exception.FileNotLexicalAnalyzerException;
 import exception.FileNotSavedException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import model.Token;
 import util.LexicalAnalyzer;
+import util.Node;
 
 /**
  * This controller manage the layers of analyzer from the compiler. Such file will have yourself controller, as such analyzer not need be sync between other files
@@ -104,5 +107,10 @@ public class Controller {
      */
     private void saveTokensFile() throws FileNotSavedException, FileNotLexicalAnalyzerException {
         this.lexAnalyzer.saveFile();
+    }
+                                      /*--------------Synthetic Analyzer Methods------------------------*/
+    
+    private HashMap<String, Node> getGrammar(){
+        return null;
     }
 }
