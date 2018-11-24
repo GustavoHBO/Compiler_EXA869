@@ -286,37 +286,48 @@ public class Grammar implements IGrammar {
     public HashMap<String, String> getFirst(String p) {
         HashMap<String, String> hashMapProductor = new HashMap<>();
         HashMap<String, String> hashMapProduction;
+        HashMap<String, String> hashMapAux = new HashMap<>();
+
         if (isTerminal(p)) {
             hashMapProductor.put(p, p);
             return hashMapProductor;
         }
         Node productor = this.grammar.get(p);
-        if(productor == null){
+        if (productor == null) {
             return null;
         }
         for (String[] production : productor.getProductions()) {
             for (String string : production) {
                 if (isTerminal(string)) {
-                    hashMapProductor.put(string, string);
+                    hashMapAux.put(string, string);
+                    if (hashMapAux.containsKey("")) {
+                        System.out.println("Removendo o \"" + hashMapAux.remove("") + "\"");
+                    }
                     break;
                 } else {
-                    if(p.equals(string)){
+                    if (p.equals(string)) {
                         break;
                     }
                     hashMapProduction = getFirst(string);
-                    if(hashMapProduction == null){
-                        hashMapProduction = new HashMap<>();
-                        return hashMapProduction;
+                    if (hashMapProduction == null) {
+                        return null;
                     }
-                    hashMapProductor.putAll(hashMapProduction);
+                    hashMapAux.putAll(hashMapProduction);
                 }
             }
+            hashMapProductor.putAll(hashMapAux);
         }
         return hashMapProductor;
     }
 
+    public HashMap<String, String> getFollow(String productor) {
+        HashMap<String, String> hashMapFollow = new HashMap<>();
+
+        return null;
+    }
+
     private boolean isTerminal(String token) {
-        if(token.equals("")){
+        if (token.equals("")) {
             return true;
         }
         return !(token.charAt(0) == '<' && token.charAt(token.length() - 1) == '>');
