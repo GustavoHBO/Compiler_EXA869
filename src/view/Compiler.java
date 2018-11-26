@@ -27,8 +27,6 @@ import exception.FileNotLexicalAnalyzerException;
 import exception.FileNotSavedException;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -54,8 +52,8 @@ public class Compiler extends Application {
         try {
             /*Testes*/
             Controller controller = new Controller("./files/", "code.cd");
-//            controller.debugGrammarFirst("<Post-Else-Block>");
-            controller.debugGetFollow("<Value>");
+            controller.debugGrammarFirst("<Return Statement>");
+            //controller.debugGetFollow("<Return Statement>");
             System.out.println("Análise Finalizada");
         } catch (FileNotFoundException ex) {
             System.out.println("");

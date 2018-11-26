@@ -291,6 +291,9 @@ public class Grammar implements IGrammar {
         if (isTerminal(p)) {
             hashMapProductor.put(p, p);
             return hashMapProductor;
+        } else if (p.equals(startSymbol)) {
+            hashMapProductor.put("$", "$");
+            return hashMapProductor;
         }
         Node productor = this.grammar.get(p);
         if (productor == null) {
@@ -305,6 +308,7 @@ public class Grammar implements IGrammar {
                     if (p.equals(string)) {
                         break;
                     }
+                    System.out.println("First: "+string);
                     hashMapProduction = getFirst(string);
                     if (hashMapProduction == null) {
                         hashMapProduction = new HashMap<>();
@@ -324,26 +328,30 @@ public class Grammar implements IGrammar {
         if (production == null) {
             return null;
         }
+        System.out.println("Entrei");
         if (production.equals(startSymbol)) {
             hashMapFollow.put("$", "$");
         } else {
             for (Map.Entry<String, Node> p : grammar.entrySet()) {
                 Node productor = p.getValue();
-                for (String[] prodAux : productor.getProductions()) {
-                    hashAux = new HashMap<>();
-                    for (int i = 0; i < prodAux.length; i++) {
-                        if (prodAux[i].equals(production)) {
-                            if (i + 1 >= prodAux.length) {
-                                hashAux.putAll(getFollow(productor.getValue()));
-                            } else {
-                                hashAux.putAll(getFirst(prodAux[i + 1]));
-                                if (hashAux.containsKey("")) {
-                                    hashAux.putAll(getFollow(prodAux[i + 1]));
+                if (!isTerminal(p.getKey())) {
+                    for (String[] prodAux : productor.getProductions()) {
+                        hashAux = new HashMap<>();
+                        for (int i = 0; i < prodAux.length; i++) {
+                            if (prodAux[i].equals(production)) {
+                                if (i - 1 >= 0 && i + 1 >= prodAux.length) {
+                                    hashAux.putAll(getFollow(prodAux[i - 1]));
+                                }else if (i + 1 < prodAux.length) {
+                                    System.out.println("Seguinte de :" + prodAux[i + 1]);
+                                    hashAux.putAll(getFirst(prodAux[i + 1]));
+                                    if (hashAux.containsKey("")) {
+                                        hashAux.putAll(getFollow(prodAux[i + 1]));
+                                    }
                                 }
                             }
                         }
+                        hashMapFollow.putAll(hashAux);
                     }
-                    hashMapFollow.putAll(hashAux);
                 }
             }
         }
