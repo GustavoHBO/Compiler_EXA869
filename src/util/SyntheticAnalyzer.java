@@ -31,15 +31,9 @@ import java.util.HashMap;
 public class SyntheticAnalyzer {
     private HashMap<String, Node> hashMap;
     private HashMap<String, Node> hashMapProduction;
+    private Grammar grammar;
     
-    public HashMap<String, Node> mountTree(HashMap<String, Node> hashMap, HashMap<String, Node> hashMapProduction){
-        String[] production;
-        String value;
-        
-        return hashMap;
+    public SyntheticAnalyzer(){
+        this.hashMap = new HashMap<>();
     }
-    
-    
-    
-    
 }

@@ -54,8 +54,8 @@ public class Compiler extends Application {
         try {
             /*Testes*/
             Controller controller = new Controller("./files/", "code.cd");
-            controller.debugPrintGrammar();
-            controller.debugGrammarFirst("<Post-Else-Block>");
+//            controller.debugGrammarFirst("<Post-Else-Block>");
+            controller.debugGetFollow("<Value>");
             System.out.println("Análise Finalizada");
         } catch (FileNotFoundException ex) {
             System.out.println("");

@@ -22,8 +22,8 @@
  */
 package util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -33,6 +33,7 @@ public class Grammar implements IGrammar {
 
     private String file;
     private final HashMap<String, Node> grammar;
+    private String startSymbol;
 
     public Grammar() {
         this.grammar = new HashMap<>();
@@ -42,6 +43,7 @@ public class Grammar implements IGrammar {
     public HashMap<String, Node> getGrammar() {
         String[][] productions;
         if (grammar.isEmpty()) {
+            startSymbol = "<Program>";
             addProductor("StringLiteral", "<Value>");
             addProductor("NumberTerminal", "<Value>");
             productions = new String[][]{{"true"}, {"false"}, {"StringLiteral"}, {"NumberTerminal"}};
@@ -291,7 +293,7 @@ public class Grammar implements IGrammar {
             return hashMapProductor;
         }
         Node productor = this.grammar.get(p);
-        if(productor == null){
+        if (productor == null) {
             return null;
         }
         for (String[] production : productor.getProductions()) {
@@ -300,11 +302,11 @@ public class Grammar implements IGrammar {
                     hashMapProductor.put(string, string);
                     break;
                 } else {
-                    if(p.equals(string)){
+                    if (p.equals(string)) {
                         break;
                     }
                     hashMapProduction = getFirst(string);
-                    if(hashMapProduction == null){
+                    if (hashMapProduction == null) {
                         hashMapProduction = new HashMap<>();
                         return hashMapProduction;
                     }
@@ -315,8 +317,41 @@ public class Grammar implements IGrammar {
         return hashMapProductor;
     }
 
+    public HashMap<String, String> getFollow(String production) {
+        HashMap<String, String> hashMapFollow = new HashMap<>();
+        HashMap<String, String> hashAux;
+
+        if (production == null) {
+            return null;
+        }
+        if (production.equals(startSymbol)) {
+            hashMapFollow.put("$", "$");
+        } else {
+            for (Map.Entry<String, Node> p : grammar.entrySet()) {
+                Node productor = p.getValue();
+                for (String[] prodAux : productor.getProductions()) {
+                    hashAux = new HashMap<>();
+                    for (int i = 0; i < prodAux.length; i++) {
+                        if (prodAux[i].equals(production)) {
+                            if (i + 1 >= prodAux.length) {
+                                hashAux.putAll(getFollow(productor.getValue()));
+                            } else {
+                                hashAux.putAll(getFirst(prodAux[i + 1]));
+                                if (hashAux.containsKey("")) {
+                                    hashAux.putAll(getFollow(prodAux[i + 1]));
+                                }
+                            }
+                        }
+                    }
+                    hashMapFollow.putAll(hashAux);
+                }
+            }
+        }
+        return hashMapFollow;
+    }
+
     private boolean isTerminal(String token) {
-        if(token.equals("")){
+        if (token.equals("")) {
             return true;
         }
         return !(token.charAt(0) == '<' && token.charAt(token.length() - 1) == '>');

@@ -119,13 +119,11 @@ public class Controller {
     }
 
     /*--------------Synthetic Analyzer Methods------------------------*/
-
     private HashMap<String, Node> getGrammar() {
         return null;
     }
 
     /*-------------- Methods for Debug ------------------------*/
-    
     public void debugGrammarFirst(String string) {
         Grammar grammar = new Grammar();
         grammar.getGrammar();
@@ -139,13 +137,23 @@ public class Controller {
             }
         }
     }
-    
-    public void debugPrintGrammar(){
+
+    public void debugPrintGrammar() {
         Grammar grammar = new Grammar();
         grammar.getGrammar();
         for (Map.Entry<String, Node> entry : grammar.getGrammar().entrySet()) {
             String key = entry.getKey();
             Node value = entry.getValue();
+            System.out.println(key);
+        }
+    }
+
+    public void debugGetFollow(String p) {
+        Grammar grammar = new Grammar();
+        grammar.getGrammar();
+        System.out.println("Exibindo o conjuto follow da produção!");
+        for (Map.Entry<String, String> entry : grammar.getFollow(p).entrySet()) {
+            String key = entry.getKey();
             System.out.println(key);
         }
     }
