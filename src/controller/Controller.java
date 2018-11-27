@@ -94,7 +94,7 @@ public class Controller {
     }
 
     /*-------------------------------------------------Private Methods-----------------------------------------------------------------*/
- /*--------------Lexical Methods------------------------*/
+    /*--------------Lexical Methods------------------------*/
     /**
      * Using the file path for read all archives on folder and analyze these
      * files.
@@ -127,10 +127,10 @@ public class Controller {
     public void debugGrammarFirst(String string) {
         Grammar grammar = new Grammar();
         grammar.getGrammar();
-        if (grammar.getFirst(string) == null) {
+        if (grammar.getFirst(string, null) == null) {
             System.out.println("Não existe alguma regra de produção para o produtor definido!");
         } else {
-            for (Map.Entry<String, String> en : grammar.getFirst(string).entrySet()) {
+            for (Map.Entry<String, String> en : grammar.getFirst(string, null).entrySet()) {
                 Object key = en.getKey();
                 Object value = en.getValue();
                 System.out.println("Conjunto de first: " + value);
@@ -140,11 +140,8 @@ public class Controller {
 
     public void debugPrintGrammar() {
         Grammar grammar = new Grammar();
-        grammar.getGrammar();
         for (Map.Entry<String, Node> entry : grammar.getGrammar().entrySet()) {
-            String key = entry.getKey();
-            Node value = entry.getValue();
-            System.out.println(key);
+            System.out.println(entry.getKey());
         }
     }
 

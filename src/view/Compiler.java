@@ -52,6 +52,7 @@ public class Compiler extends Application {
         try {
             /*Testes*/
             Controller controller = new Controller("./files/", "code.cd");
+            //controller.debugPrintGrammar();
             controller.debugGrammarFirst("<Return Statement>");
             //controller.debugGetFollow("<Return Statement>");
             System.out.println("Análise Finalizada");

@@ -285,11 +285,14 @@ public class Grammar implements IGrammar {
         node.addFollow(productor);
     }
 
-    public HashMap<String, String> getFirst(String p) {
+    public HashMap<String, String> getFirst(String p, HashMap<String, String> hashMapVisitors) {
         HashMap<String, String> hashMapProductor = new HashMap<>();
         HashMap<String, String> hashMapProduction;
-        HashMap<String, String> hashMapAux = new HashMap<>();
-
+        HashMap<String, String> hashMapAux;
+        if (hashMapVisitors == null) {
+            hashMapVisitors = new HashMap<>();
+        }
+        System.out.println("Primeiro de " + p);
         if (isTerminal(p)) {
             hashMapProductor.put(p, p);
             return hashMapProductor;
@@ -302,23 +305,24 @@ public class Grammar implements IGrammar {
             return null;
         }
         for (String[] production : productor.getProductions()) {
+            hashMapAux = new HashMap<>();
             for (String string : production) {
-                if (isTerminal(string)) {
-                    hashMapAux.put(string, string);
-                    if (hashMapAux.containsKey("")) {
-                        System.out.println("Removendo o \"" + hashMapAux.remove("") + "\"");
-                    }
+                if (hashMapVisitors.containsKey(string)) {
                     break;
+                } else if (isTerminal(string)) {// Find a terminal.
+                    hashMapAux.put(string, string);
+                    hashMapAux.remove(""); // Case have 'empy'.
+                    break;// Break, the search finish.
                 } else {
-                    if (p.equals(string)) {
+                    if (p.equals(string)) {// Case the search found yourself.
                         break;
                     }
-                    System.out.println("First: "+string);
-                    hashMapProduction = getFirst(string);
+                    System.out.println("First: " + string);
+                    hashMapVisitors.put(string, string);
+                    hashMapProduction = getFirst(string, hashMapVisitors);
+                    System.out.println("Encontrei\nProcurando de :" + string);
                     if (hashMapProduction == null) {
-                        hashMapProduction = new HashMap<>();
-                        return hashMapProduction;
-
+                        return hashMapProductor;
                     }
                     hashMapAux.putAll(hashMapProduction);
                 }
@@ -348,9 +352,9 @@ public class Grammar implements IGrammar {
                             if (prodAux[i].equals(production)) {
                                 if (i - 1 >= 0 && i + 1 >= prodAux.length) {
                                     hashAux.putAll(getFollow(prodAux[i - 1]));
-                                }else if (i + 1 < prodAux.length) {
+                                } else if (i + 1 < prodAux.length) {
                                     System.out.println("Seguinte de :" + prodAux[i + 1]);
-                                    hashAux.putAll(getFirst(prodAux[i + 1]));
+                                    hashAux.putAll(getFirst(prodAux[i + 1], null));
                                     if (hashAux.containsKey("")) {
                                         hashAux.putAll(getFollow(prodAux[i + 1]));
                                     }

@@ -22,18 +22,30 @@
  */
 package util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import model.Token;
 
 /**
  *
  * @author Gustavo Henrique.
  */
 public class SyntheticAnalyzer {
+
     private HashMap<String, Node> hashMap;
     private HashMap<String, Node> hashMapProduction;
+    private final ArrayList<Token> listTokens;
     private Grammar grammar;
-    
-    public SyntheticAnalyzer(){
+
+    public SyntheticAnalyzer(ArrayList<Token> listTokens, Grammar grammar) {
         this.hashMap = new HashMap<>();
+        this.listTokens = listTokens;
+        this.grammar = grammar;
+    }
+
+    public void AnalyzerTokens() {
+        if (listTokens != null) {
+            
+        }
     }
 }
