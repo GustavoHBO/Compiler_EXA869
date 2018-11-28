@@ -22,8 +22,6 @@
  */
 package util;
 
-import java.util.HashMap;
-
 /**
  *
  * @author Gustavo Henrique
@@ -32,16 +30,13 @@ import java.util.HashMap;
 public class Node {
 
     private String[][] productions;
-    private final HashMap<String, String> productorMap;
     private final String value;
 
     public Node(String value) {
-        this.productorMap = new HashMap<>();
         this.value = value;
     }
 
     public Node(String value, String[][] productions) {
-        this.productorMap = new HashMap<>();
         this.value = value;
         this.productions = productions;
     }
@@ -56,9 +51,5 @@ public class Node {
 
     public void setProductions(String[][] production) {
         this.productions = production;
-    }
-    
-    public void addFollow(String follow){
-        this.productorMap.put(follow, follow);
     }
 }

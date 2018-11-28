@@ -282,7 +282,6 @@ public class Grammar implements IGrammar {
             this.grammar.put(production, new Node(production));
             node = this.grammar.get(production);
         }
-        node.addFollow(productor);
     }
 
     public HashMap<String, String> getFirst(String p, HashMap<String, String> hashMapVisitors) {
@@ -351,7 +350,7 @@ public class Grammar implements IGrammar {
                         for (int i = 0; i < prodAux.length; i++) {
                             if (prodAux[i].equals(production)) {
                                 if (i - 1 >= 0 && i + 1 >= prodAux.length) {
-                                    hashAux.putAll(getFollow(prodAux[i - 1]));
+                                    hashAux.putAll(getFollow(productor.getValue()));
                                 } else if (i + 1 < prodAux.length) {
                                     System.out.println("Seguinte de :" + prodAux[i + 1]);
                                     hashAux.putAll(getFirst(prodAux[i + 1], null));
