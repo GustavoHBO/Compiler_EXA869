@@ -342,16 +342,17 @@ public class Grammar implements IGrammar {
         if (production.equals(startSymbol)) {
             hashMapFollow.put("$", "$");
         } else {
+            Node productor;
             for (Map.Entry<String, Node> p : grammar.entrySet()) {
-                Node productor = p.getValue();
+                productor = p.getValue();
                 if (!isTerminal(p.getKey())) {
                     for (String[] prodAux : productor.getProductions()) {
                         hashAux = new HashMap<>();
                         for (int i = 0; i < prodAux.length; i++) {
                             if (prodAux[i].equals(production)) {
                                 if (i - 1 >= 0 && i + 1 >= prodAux.length) {
-                                    hashAux.putAll(getFollow(productor.getValue()));
-                                } else if (i + 1 < prodAux.length) {
+                                    hashAux.putAll(getFollow(productor.getValue()));// Case the production finish with αB
+                                } else if (i + 1 < prodAux.length) {// Case the production finish with αBβ
                                     System.out.println("Seguinte de :" + prodAux[i + 1]);
                                     hashAux.putAll(getFirst(prodAux[i + 1], null));
                                     if (hashAux.containsKey("")) {
