@@ -22,6 +22,8 @@
  */
 package util;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Gustavo Henrique
@@ -31,6 +33,8 @@ public class Node {
 
     private String[][] productions;
     private final String value;
+    private String[] first;
+    private String[] follow;
 
     public Node(String value) {
         this.value = value;
@@ -39,6 +43,95 @@ public class Node {
     public Node(String value, String[][] productions) {
         this.value = value;
         this.productions = productions;
+    }
+
+    public void addFirst(String sFirst) {
+        if (first == null) {
+            first = new String[1];
+            first[0] = sFirst;
+        } else {
+            for (String string : first) {
+                if (string.equals(sFirst)) {
+                    return;
+                }
+            }
+            String[] sAux = Arrays.copyOf(first, first.length + 1);
+            sAux[sAux.length - 1] = sFirst;
+            first = sAux;
+        }
+    }
+
+    public void addFirst(String[] sFirst) {
+        if (first == null) {
+            first = Arrays.copyOf(sFirst, sFirst.length);
+        } else {
+            for (String string : sFirst) {
+                if (!firstContains(string)) {
+                    addFirst(string);
+                }
+            }
+        }
+    }
+
+    public void removeFirst(String string) {
+        String strAux;
+        if (first != null) {
+            for (int i = 0; i < first.length; i++) {
+                if (first[i].equals(string)) {
+                    first[i] = first[first.length - 1];
+                }
+            }
+            first = Arrays.copyOf(first, first.length - 1);
+        }
+    }
+
+    public boolean firstContains(String str) {
+        for (String string : first) {
+            if (string.equals(str)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addFollow(String sFollow) {
+        if (follow == null) {
+            follow = new String[1];
+            follow[0] = sFollow;
+        } else {
+            for (String string : follow) {
+                if (string.equals(sFollow)) {
+                    return;
+                }
+            }
+            String[] sAux = Arrays.copyOf(follow, follow.length + 1);
+            sAux[sAux.length - 1] = sFollow;
+            follow = sAux;
+        }
+    }
+
+    public void addFollow(String[] sFollow) {
+        if (follow == null) {
+            follow = Arrays.copyOf(sFollow, sFollow.length);
+        } else {
+            for (String string : sFollow) {
+                if (!followContains(string)) {
+                    addFollow(string);
+                }
+            }
+        }
+    }
+
+    public boolean followContains(String str) {
+        if (follow == null) {
+            return false;
+        }
+        for (String string : follow) {
+            if (string.equals(str)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getValue() {
@@ -51,5 +144,33 @@ public class Node {
 
     public void setProductions(String[][] production) {
         this.productions = production;
+    }
+
+    /**
+     * @return the first
+     */
+    public String[] getFirst() {
+        return first;
+    }
+
+    /**
+     * @param first the first to set
+     */
+    public void setFirst(String[] first) {
+        this.first = first;
+    }
+
+    /**
+     * @return the follow
+     */
+    public String[] getFollow() {
+        return follow;
+    }
+
+    /**
+     * @param follow the follow to set
+     */
+    public void setFollow(String[] follow) {
+        this.follow = follow;
     }
 }

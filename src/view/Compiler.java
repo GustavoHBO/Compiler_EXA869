@@ -53,12 +53,13 @@ public class Compiler extends Application {
             /*Testes*/
             Controller controller = new Controller("./files/", "code.cd");
             //controller.debugPrintGrammar();
-            controller.debugGrammarFirst("<Return Statement>");
-            //controller.debugGetFollow("<Return Statement>");
+            //controller.debugGrammarFirst("<Return Statement>");
+            controller.debugGetFollow("<Return Statement>");
             System.out.println("Análise Finalizada");
         } catch (FileNotFoundException ex) {
             System.out.println("");
         }
+        System.exit(0);
         /*Testes*/
         Button btn = new Button();
         btn.setText("Click here to analyse the files on folder files");
