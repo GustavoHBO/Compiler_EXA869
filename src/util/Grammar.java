@@ -168,32 +168,25 @@ public final class Grammar implements IGrammar, Observer {
         node.setProductions(production);
     }
 
-    public Node getNode(String p){
+    public Node getNode(String p) {
         return grammar.get(p);
     }
-    
+
     public void getFirst(Node node) {
-        Node nodeAux;
-        Node nodeAux2;
         if (node != null) {
             for (String[] production : node.getProductions()) {
-                nodeAux = new Node("");
                 for (String prod : production) {
                     if (!node.getValue().equals(prod)) {
                         if (isTerminal(prod)) {
-                            nodeAux.addFirst(prod);
-                            node.addFirst(nodeAux.getFirst());
+                            node.addFirst(prod);
                             break;
                         } else {
-                            nodeAux2 = grammar.get(prod);
-                            nodeAux.addFirst(nodeAux2.getFirst());
-                            node.addFirst(nodeAux.getFirst());
-                            if (!nodeAux2.firstContains("")) {
+                            node.addFirst(grammar.get(prod).getFirst());
+                            if (!grammar.get(prod).firstContains("")) {
                                 break;
                             }
                         }
                     } else {
-                        node.addFirst(nodeAux.getFirst());
                         break;
                     }
                 }
@@ -202,24 +195,41 @@ public final class Grammar implements IGrammar, Observer {
     }
 
     public void getFollow(Node node) {
-        if (node != null && node.getValue().equals(startSymbol)) {
-            node.addFollow("$");
-        } else {
-            for (Map.Entry<String, Node> p : grammar.entrySet()) {
-                for (String[] pAux : p.getValue().getProductions()) {
-                    Node nodeAux;
-                    for (int i = 0; i < pAux.length; i++) {
-                        node = grammar.get(pAux[i]);
-                        if (i + 1 > pAux.length) { // αB
-                            node.addFollow(p.getValue().getFollow());
-                            break;
-                        } else { //αBβ
-                            nodeAux = grammar.get(pAux[i + 1]);
-                            node.addFollow(nodeAux.getFirst());
-                            if (nodeAux.firstContains("")) {
-                                node.addFollow(nodeAux.getFollow());
-                            } else {
-                                break;
+        getFollow(node, null);
+    }
+
+    private void getFollow(Node node, HashMap<String, String> visit) {
+        if (node != null) {
+            if (node.getValue().equals(startSymbol)) {
+                node.addFollow("$");
+            } else {
+                if (visit == null) {
+                    visit = new HashMap<>();
+                }
+                if(visit.containsKey(node.getValue()))
+                    return;
+                visit.put(node.getValue(), node.getValue());
+                for (Map.Entry<String, Node> p : grammar.entrySet()) {
+                    for (String[] pAux : p.getValue().getProductions()) {
+                        for (int i = 0; i < pAux.length; i++) {
+                            if (pAux[i].equals(node.getValue())) {
+                                if (i + 1 >= pAux.length) { // αB
+                                    getFollow(p.getValue(), visit);
+                                    node.addFollow(p.getValue().getFollow());
+                                    break;
+                                } else { //αBβ
+                                    if (isTerminal(pAux[i + 1])) {
+                                        node.addFollow(pAux[i + 1]);
+                                        break;
+                                    }
+                                    getFollow(grammar.get(pAux[i + 1]), visit);
+                                    node.addFollow(grammar.get(pAux[i + 1]).getFirst());
+                                    if (grammar.get(pAux[i + 1]).firstContains("")) {
+                                        node.addFollow(grammar.get(pAux[i + 1]).getFollow());
+                                    } else {
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }

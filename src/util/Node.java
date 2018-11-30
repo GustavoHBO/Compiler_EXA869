@@ -34,8 +34,8 @@ public class Node extends Observable {
 
     private String[][] productions;
     private final String value;
-    private String[] first;
-    private String[] follow;
+    private String[] first = null;
+    private String[] follow = null;
 
     public Node(String value) {
         this.value = value;
@@ -47,7 +47,6 @@ public class Node extends Observable {
     }
 
     public void addFirst(String sFirst) {
-        System.out.println("Adicionando : "+sFirst + " a : " + value);
         if (first == null) {
             first = new String[1];
             first[0] = sFirst;
