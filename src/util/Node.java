@@ -23,13 +23,14 @@
 package util;
 
 import java.util.Arrays;
+import java.util.Observable;
 
 /**
  *
  * @author Gustavo Henrique
  * @author Marcos Vinícius
  */
-public class Node {
+public class Node extends Observable {
 
     private String[][] productions;
     private final String value;
@@ -46,14 +47,13 @@ public class Node {
     }
 
     public void addFirst(String sFirst) {
+        System.out.println("Adicionando : "+sFirst + " a : " + value);
         if (first == null) {
             first = new String[1];
             first[0] = sFirst;
         } else {
-            for (String string : first) {
-                if (string.equals(sFirst)) {
-                    return;
-                }
+            if (firstContains(sFirst)) {
+                return;
             }
             String[] sAux = Arrays.copyOf(first, first.length + 1);
             sAux[sAux.length - 1] = sFirst;
@@ -99,10 +99,8 @@ public class Node {
             follow = new String[1];
             follow[0] = sFollow;
         } else {
-            for (String string : follow) {
-                if (string.equals(sFollow)) {
-                    return;
-                }
+            if (followContains(sFollow)) {
+                return;
             }
             String[] sAux = Arrays.copyOf(follow, follow.length + 1);
             sAux[sAux.length - 1] = sFollow;
@@ -150,6 +148,10 @@ public class Node {
      * @return the first
      */
     public String[] getFirst() {
+        if (first == null) {
+            setChanged();
+            notifyObservers("first");
+        }
         return first;
     }
 
@@ -164,6 +166,10 @@ public class Node {
      * @return the follow
      */
     public String[] getFollow() {
+        if (follow == null) {
+            setChanged();
+            notifyObservers("follow");
+        }
         return follow;
     }
 

@@ -24,25 +24,27 @@ package util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  *
  * @author gustavo
  */
-public class Grammar implements IGrammar {
+public final class Grammar implements IGrammar, Observer {
 
-    private String file;
-    private final HashMap<String, Node> grammar;
+    private HashMap<String, Node> grammar;
     private String startSymbol;
 
     public Grammar() {
-        this.grammar = new HashMap<>();
+        this.grammar = getGrammar();
     }
 
     @Override
     public HashMap<String, Node> getGrammar() {
         String[][] productions;
-        if (grammar.isEmpty()) {
+        if (grammar == null || grammar.isEmpty()) {
+            grammar = new HashMap<>();
             startSymbol = "<Program>";
             productions = new String[][]{{"true"}, {"false"}, {"StringLiteral"}, {"NumberTerminal"}};
             addProduction("<Value>", productions);
@@ -157,29 +159,41 @@ public class Grammar implements IGrammar {
     }
 
     public void addProduction(String value, String[][] production) {
-        Node node = this.grammar.get(value);
+        Node node = grammar.get(value);
         if (node == null) {
             node = new Node(value);
-            this.grammar.put(value, node);
+            node.addObserver(this);
+            grammar.put(value, node);
         }
         node.setProductions(production);
     }
 
-    public void getFirst(String p) {
-        Node node = this.grammar.get(p);
+    public Node getNode(String p){
+        return grammar.get(p);
+    }
+    
+    public void getFirst(Node node) {
         Node nodeAux;
-        if (p != null) {
+        Node nodeAux2;
+        if (node != null) {
             for (String[] production : node.getProductions()) {
-                nodeAux = new Node(p);
-                for (int i = 0; i < production.length; i++) {
-                    if(!node.getValue().equals(production[i])){
-                        if(isTerminal(production[i])){
-                            nodeAux.addFirst(production[i]);
+                nodeAux = new Node("");
+                for (String prod : production) {
+                    if (!node.getValue().equals(prod)) {
+                        if (isTerminal(prod)) {
+                            nodeAux.addFirst(prod);
+                            node.addFirst(nodeAux.getFirst());
                             break;
                         } else {
-                            nodeAux.addFirst(grammar.get(production[i]).getFirst());
+                            nodeAux2 = grammar.get(prod);
+                            nodeAux.addFirst(nodeAux2.getFirst());
+                            node.addFirst(nodeAux.getFirst());
+                            if (!nodeAux2.firstContains("")) {
+                                break;
+                            }
                         }
                     } else {
+                        node.addFirst(nodeAux.getFirst());
                         break;
                     }
                 }
@@ -187,14 +201,8 @@ public class Grammar implements IGrammar {
         }
     }
 
-    public HashMap<String, String> getFollow(String production) {
-        HashMap<String, String> hashMapFollow = new HashMap<>();
-        HashMap<String, String> hashAux;
-        Node node = this.grammar.get(production);
-        if (production == null || node == null) {
-            return null;
-        }
-        if (production.equals(startSymbol)) {
+    public void getFollow(Node node) {
+        if (node != null && node.getValue().equals(startSymbol)) {
             node.addFollow("$");
         } else {
             for (Map.Entry<String, Node> p : grammar.entrySet()) {
@@ -218,7 +226,6 @@ public class Grammar implements IGrammar {
                 }
             }
         }
-        return hashMapFollow;
     }
 
     private boolean isTerminal(String token) {
@@ -226,5 +233,20 @@ public class Grammar implements IGrammar {
             return true;
         }
         return !(token.charAt(0) == '<' && token.charAt(token.length() - 1) == '>');
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof Node) {
+            if (arg instanceof String) {
+                Node node = (Node) o;
+                String string = (String) arg;
+                if (string.equals("first")) {
+                    getFirst(node);
+                } else {
+                    getFollow(node);
+                }
+            }
+        }
     }
 }

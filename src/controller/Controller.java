@@ -126,32 +126,46 @@ public class Controller {
     /*-------------- Methods for Debug ------------------------*/
     public void debugGrammarFirst(String string) {
         Grammar grammar = new Grammar();
-        grammar.getGrammar();
-        if (grammar.getFirst(string, null) == null) {
+        Node node = grammar.getNode(string);
+        if (node == null) {
             System.out.println("Não existe alguma regra de produção para o produtor definido!");
         } else {
-            for (Map.Entry<String, String> en : grammar.getFirst(string, null).entrySet()) {
-                Object key = en.getKey();
-                Object value = en.getValue();
-                System.out.println("Conjunto de first: " + value);
+            System.out.println("Exibindo o conjunto first!");
+            System.out.println("Tamanho :" + node.getFirst().length);
+            for (String str : node.getFirst()) {
+                System.out.println(str);
             }
+            System.out.println("Finalizando a exibição!");
         }
     }
 
     public void debugPrintGrammar() {
         Grammar grammar = new Grammar();
-        for (Map.Entry<String, Node> entry : grammar.getGrammar().entrySet()) {
+        grammar.getGrammar().entrySet().forEach((entry) -> {
             System.out.println(entry.getKey());
-        }
+        });
     }
 
     public void debugGetFollow(String p) {
         Grammar grammar = new Grammar();
-        grammar.getGrammar();
+        Node node = grammar.getNode(p);
         System.out.println("Exibindo o conjuto follow da produção!");
-        for (Map.Entry<String, String> entry : grammar.getFollow(p).entrySet()) {
-            String key = entry.getKey();
-            System.out.println(key);
+        for (String str : node.getFollow()) {
+            System.out.println(str);
+        }
+    }
+    
+    public void debugAddFirst(String str){
+        Grammar grammar = new Grammar();
+        Node node, nodeAux;
+        node = grammar.getNode(str);
+        nodeAux = new Node(str);
+        node.addFirst("a");
+        node.addFirst("b");
+        node.addFirst("c");
+        nodeAux.addFirst(node.getFirst());
+        for (String string : nodeAux.getFirst()) {
+            System.out.println(string);
         }
     }
 }
