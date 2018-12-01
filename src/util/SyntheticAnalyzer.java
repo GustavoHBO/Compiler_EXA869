@@ -36,16 +36,45 @@ public class SyntheticAnalyzer {
     private HashMap<String, Node> hashMapProduction;
     private final ArrayList<Token> listTokens;
     private Grammar grammar;
+    private int indexToken;
+    private Token currentToken;
+    private int amountErro;
 
     public SyntheticAnalyzer(ArrayList<Token> listTokens, Grammar grammar) {
         this.hashMap = new HashMap<>();
         this.listTokens = listTokens;
         this.grammar = grammar;
+        this.indexToken = -1;
+        this.amountErro = 0;
     }
 
     public void AnalyzerTokens() {
         if (listTokens != null) {
             
         }
+    }
+
+    private void eat(){
+        if(indexToken + 1 < listTokens.size() ){
+            indexToken ++;
+            this.currentToken = listTokens.get(indexToken);
+        }
+    }
+
+    private void metch(){
+
+    }
+
+    private void panicMode(){
+        publishErro();
+        while(!currentToken.getString().matches(";")){ // this should be changed later for characters synchronizer all
+            eat(); // consuming the tokens up until find a character synchronizer
+        }
+    }
+
+    private void publishErro(){
+        amountErro++;
+        //here will be the time write on file
+        System.out.println("There an error in token " + currentToken.getString() + " type " +currentToken.getType());
     }
 }
