@@ -150,6 +150,7 @@ public class Controller {
         Grammar grammar = new Grammar();
         Node node = grammar.getNode(p);
         System.out.println("Exibindo o conjuto follow da produção!");
+        System.out.println("Node : " + node.getValue());
         for (String str : node.getFollow()) {
             System.out.println(str);
         }
