@@ -34,7 +34,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
@@ -46,31 +47,50 @@ public class Compiler extends Application {
 
     private int qnt = 0; // Threads actual.
     private final int QNTM = 0; // Max of thread running in same time.
+    private final int heightButton = 40;
 
     @Override
     public void start(Stage primaryStage) {
-        try {
-            /*Testes*/
-            Controller controller = new Controller("./files/", "code.cd");
-            //controller.debugPrintGrammar();
-            //controller.debugGrammarFirst("<Program>");
-            controller.debugGetFollow("<Condition>");
-            //controller.debugAddFirst("<Return Statement>");
-            System.out.println("Análise Finalizada");
-        } catch (FileNotFoundException ex) {
-            System.out.println("");
-        }
-        System.exit(0);
         /*Testes*/
+//        try {
+//            Controller controller = new Controller("./files/", "code.cd");
+//            //controller.debugPrintGrammar();
+//            //controller.debugGrammarFirst("<Program>");
+//            controller.debugGetFollow("<Condition>");
+//            //controller.debugAddFirst("<Return Statement>");
+//            System.out.println("Análise Finalizada");
+//        } catch (FileNotFoundException ex) {
+//            System.out.println("");
+//        }
+//        System.exit(0);
+        /*Testes*/
+
         Button btn = new Button();
         btn.setText("Click here to analyse the files on folder files");
+        btn.setPrefSize(400, heightButton);
+        btn.setLayoutX(100);
+        btn.setLayoutY(100);
         btn.setOnAction((ActionEvent event) -> {
             analyzeFilesOnFolder("./files/");
-            //System.exit(0);
         });
 
-        StackPane root = new StackPane();
+        Button btnChooser = new Button();
+        btnChooser.setText("Click here to select just one file");
+        btnChooser.setPrefSize(250, heightButton);
+        btnChooser.setLayoutX(175);
+        btnChooser.setLayoutY(150);
+        btnChooser.setOnAction((ActionEvent event) -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Resource File");
+            File file = fileChooser.showOpenDialog(primaryStage);
+            if (file != null) {
+                analyzeFilesOnFolder(file.getPath());
+            }
+        });
+
+        Pane root = new Pane();
         root.getChildren().add(btn);
+        root.getChildren().add(btnChooser);
 
         Scene scene = new Scene(root, 600, 500);
 
@@ -97,7 +117,6 @@ public class Compiler extends Application {
                     Runnable r1;
                     r1 = () -> {
                         try {
-
                             Controller controller = new Controller(filePath, fileName);
                             qnt++;
                             controller.analyzeFile();
