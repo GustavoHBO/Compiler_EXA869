@@ -23,6 +23,7 @@
 package util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
@@ -198,35 +199,32 @@ public final class Grammar implements IGrammar, Observer {
         getFollow(node, null);
     }
 
-    private void getFollow(Node node, HashMap<String, String> visit) {
+    private void getFollow(Node node, HashSet<String> vis) {
+        if (vis == null) {
+            vis = new HashSet<>();
+        }
         if (node != null) {
             if (node.getValue().equals(startSymbol)) {
                 node.addFollow("$");
             } else {
-                if (visit == null) {
-                    visit = new HashMap<>();
-                }
-                if(visit.containsKey(node.getValue()))
-                    return;
-                visit.put(node.getValue(), node.getValue());
                 for (Map.Entry<String, Node> p : grammar.entrySet()) {
                     for (String[] pAux : p.getValue().getProductions()) {
                         for (int i = 0; i < pAux.length; i++) {
                             if (pAux[i].equals(node.getValue())) {
                                 if (i + 1 >= pAux.length) { // αB
-                                    getFollow(p.getValue(), visit);
-                                    node.addFollow(p.getValue().getFollow());
+                                    if (!vis.contains(p.getKey())) {
+                                        vis.add(p.getKey());
+                                        getFollow(p.getValue(), vis);
+                                        node.addFollow(p.getValue().getFollow());
+                                    }
                                     break;
                                 } else { //αBβ
                                     if (isTerminal(pAux[i + 1])) {
                                         node.addFollow(pAux[i + 1]);
                                         break;
                                     }
-                                    getFollow(grammar.get(pAux[i + 1]), visit);
                                     node.addFollow(grammar.get(pAux[i + 1]).getFirst());
                                     if (grammar.get(pAux[i + 1]).firstContains("")) {
-                                        node.addFollow(grammar.get(pAux[i + 1]).getFollow());
-                                    } else {
                                         break;
                                     }
                                 }
