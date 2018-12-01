@@ -85,7 +85,11 @@ public class Node extends Observable {
     }
 
     public boolean firstContains(String str) {
+        if (first == null) {
+            getFirst();
+        }
         for (String string : first) {
+            System.out.println("Comparando \"" + string + "\" com \"" + str + "\"");
             if (string.equals(str)) {
                 return true;
             }

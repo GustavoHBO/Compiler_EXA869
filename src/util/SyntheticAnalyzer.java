@@ -24,6 +24,7 @@ package util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import model.Token;
 
 /**
@@ -48,33 +49,78 @@ public class SyntheticAnalyzer {
         this.amountErro = 0;
     }
 
-    public void AnalyzerTokens() {
+    public void analyzerTokens() {
+        System.out.println("Iniciando a Análise");
         if (listTokens != null) {
-            
+//            for (Iterator<Token> iterator = listTokens.iterator(); iterator.hasNext();) {
+//                Token next = iterator.next();
+//                Node node = grammar.getNode(next.getString());
+//            }
+            Node node = grammar.getStartNode();
+//            for (Iterator<Token> iterator = listTokens.iterator(); iterator.hasNext();) {
+//                Token next = iterator.next();
+//                for (String[] production : node.getProductions()) {
+//                    for (String string : production) {
+//                        if (grammar.getNode(string) != null) {
+//
+//                        }
+//                    }
+//                }
+//            }
+            s(node, listTokens, grammar, 0);
         }
     }
 
-    private void eat(){
-        if(indexToken + 1 < listTokens.size() ){
-            indexToken ++;
+    public boolean s(Node node, ArrayList<Token> listTokens, Grammar grammar, int i) {
+        System.out.println(node.getValue());
+        Node nodeAux;
+        for (String[] production : node.getProductions()) {
+            for (String string : production) {
+                nodeAux = grammar.getNode(string);
+                System.out.println("Node AUX " + string);
+                if (nodeAux == null) {
+                    if (string.equals(listTokens.get(i).getString()));
+                } else {
+                    System.out.println("Produções de " + nodeAux.getValue());
+                    for (String string1 : nodeAux.getFirst()) {
+                        System.out.println(string1);
+                    }
+                    if (!nodeAux.firstContains("")) {
+                        System.out.println("Não contém Vazio");
+                        if (nodeAux.firstContains(string)) {
+                            System.out.println("Contém");
+                        }
+                        break;
+                    }
+                    System.out.println("Contém Vazio");
+                }
+            }
+            System.out.println("Próxima produção");
+        }
+        return false;
+    }
+
+    private void eat() {
+        if (indexToken + 1 < listTokens.size()) {
+            indexToken++;
             this.currentToken = listTokens.get(indexToken);
         }
     }
 
-    private void metch(){
+    private void metch() {
 
     }
 
-    private void panicMode(){
+    private void panicMode() {
         publishErro();
-        while(!currentToken.getString().matches(";")){ // this should be changed later for characters synchronizer all
+        while (!currentToken.getString().matches(";")) { // this should be changed later for characters synchronizer all
             eat(); // consuming the tokens up until find a character synchronizer
         }
     }
 
-    private void publishErro(){
+    private void publishErro() {
         amountErro++;
         //here will be the time write on file
-        System.out.println("There an error in token " + currentToken.getString() + " type " +currentToken.getType());
+        System.out.println("There an error in token " + currentToken.getString() + " type " + currentToken.getType());
     }
 }

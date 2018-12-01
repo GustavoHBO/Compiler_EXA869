@@ -26,12 +26,11 @@ import exception.FileNotLexicalAnalyzerException;
 import exception.FileNotSavedException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import model.Token;
 import util.Grammar;
 import util.LexicalAnalyzer;
 import util.Node;
+import util.SyntheticAnalyzer;
 
 /**
  * This controller manage the layers of analyzer from the compiler. Such file
@@ -44,7 +43,9 @@ public class Controller {
 
     private final String fileName;
     private final String filePath;
-    private LexicalAnalyzer lexAnalyzer;
+    private final LexicalAnalyzer lexAnalyzer;
+    private final Grammar grammar;
+    private SyntheticAnalyzer synAnalyzer;
 
     /**
      * The controller for file, it will can running the analyzer the files.
@@ -56,10 +57,11 @@ public class Controller {
     public Controller(String filePath, String fileName) throws FileNotFoundException {
         this.filePath = filePath;
         this.fileName = fileName;
-        this.lexAnalyzer = getLexicalAnalyzer();
+        this.lexAnalyzer = getLexicalAnalyzer(); // Obtains the list of tokens
+        this.grammar = new Grammar(); // Obtains the grammar
     }
 
-    /*-------------------------------------------------Public Methods-----------------------------------------------------------------*/
+    /*____________________________________________________________ Public Methods ____________________________________________________________*/
     /**
      * Run the analyzer from the file creating the list of tokens.
      *
@@ -67,8 +69,11 @@ public class Controller {
      */
     public void analyzeFile() throws FileNotFoundException {
         this.lexAnalyzer.analyzeFile();
+        this.synAnalyzer = getSyntheticAnalyzer(); // Analyze the list of tokens
+        this.synAnalyzer.analyzerTokens();
     }
 
+    /*------------------------------------------------------------ Lexical Methods ------------------------------------------------------------*/
     /**
      * Get the list of tokens from actual file.
      *
@@ -93,8 +98,10 @@ public class Controller {
         saveTokensFile();
     }
 
-    /*-------------------------------------------------Private Methods-----------------------------------------------------------------*/
-    /*--------------Lexical Methods------------------------*/
+    /*------------------------------------------------------------ Synthetic Analyzer Methods ------------------------------------------------------------*/
+
+ /*____________________________________________________________ Private Methods ____________________________________________________________*/
+ /*------------------------------------------------------------ Lexical Methods ------------------------------------------------------------*/
     /**
      * Using the file path for read all archives on folder and analyze these
      * files.
@@ -104,9 +111,8 @@ public class Controller {
      * @return ArrayList Token - List with the tokens of the file.
      */
     private LexicalAnalyzer getLexicalAnalyzer() throws FileNotFoundException {
-        lexAnalyzer = new LexicalAnalyzer(filePath, fileName);
-        lexAnalyzer.analyzeFile();
-        return new LexicalAnalyzer(filePath, fileName);
+        LexicalAnalyzer lex = new LexicalAnalyzer(filePath, fileName);
+        return lex;
     }
 
     /**
@@ -118,14 +124,16 @@ public class Controller {
         this.lexAnalyzer.saveFile();
     }
 
-    /*--------------Synthetic Analyzer Methods------------------------*/
-    private HashMap<String, Node> getGrammar() {
-        return null;
+    /*------------------------------------------------------------ Synthetic Analyzer Methods ------------------------------------------------------------*/
+    private SyntheticAnalyzer getSyntheticAnalyzer() {
+        if (lexAnalyzer.getTokens() == null) {
+            System.out.println("eh nullo");
+        }
+        return new SyntheticAnalyzer(lexAnalyzer.getTokens(), grammar);
     }
 
-    /*-------------- Methods for Debug ------------------------*/
+    /*------------------------------------------------------------ Methods for Debug ------------------------------------------------------------*/
     public void debugGrammarFirst(String string) {
-        Grammar grammar = new Grammar();
         Node node = grammar.getNode(string);
         if (node == null) {
             System.out.println("Não existe alguma regra de produção para o produtor definido!");
@@ -140,14 +148,12 @@ public class Controller {
     }
 
     public void debugPrintGrammar() {
-        Grammar grammar = new Grammar();
         grammar.getGrammar().entrySet().forEach((entry) -> {
             System.out.println(entry.getKey());
         });
     }
 
     public void debugGetFollow(String p) {
-        Grammar grammar = new Grammar();
         Node node = grammar.getNode(p);
         System.out.println("Exibindo o conjuto follow da produção!");
         System.out.println("Node : " + node.getValue());
@@ -155,9 +161,8 @@ public class Controller {
             System.out.println(str);
         }
     }
-    
-    public void debugAddFirst(String str){
-        Grammar grammar = new Grammar();
+
+    public void debugAddFirst(String str) {
         Node node, nodeAux;
         node = grammar.getNode(str);
         nodeAux = new Node(str);

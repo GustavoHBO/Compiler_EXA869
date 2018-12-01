@@ -172,7 +172,11 @@ public final class Grammar implements IGrammar, Observer {
     public Node getNode(String p) {
         return grammar.get(p);
     }
-
+    
+    public Node getStartNode(){
+        return grammar.get(startSymbol);
+    }
+    
     public void getFirst(Node node) {
         if (node != null) {
             for (String[] production : node.getProductions()) {
