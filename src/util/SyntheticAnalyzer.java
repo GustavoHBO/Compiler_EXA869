@@ -24,7 +24,6 @@ package util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import model.Token;
 
 /**
@@ -40,6 +39,7 @@ public class SyntheticAnalyzer {
     private int indexToken;
     private Token currentToken;
     private int amountErro;
+    private int i = 0;
 
     public SyntheticAnalyzer(ArrayList<Token> listTokens, Grammar grammar) {
         this.hashMap = new HashMap<>();
@@ -67,71 +67,101 @@ public class SyntheticAnalyzer {
 //                    }
 //                }
 //            }
-            s(node, 0);
+            s(node);
         }
     }
 
-    public int s(Node node, int i) {
+    public void s(Node node) {
         System.out.println(node.getValue());
         Node nodeAux;
-
-        if (i >= listTokens.size()) {
-            System.out.println("Estourou o limite do array");
-            return -2;
-        }
-
-        for (String[] production : node.getProductions()) {
-            for (int j = 0; j < production.length; j++) {
-                nodeAux = grammar.getNode(production[j]);
-                System.out.println("\nNode AUX \"" + production[j] + "\"");
+        if (i < listTokens.size()) {
+            for (int k = 0; k < node.getProductions().length; k++) {
+                String[] production = node.getProductions()[k];
+                for (int j = 0; j < production.length; j++) {
+                    nodeAux = grammar.getNode(production[j]);
+                    System.out.println("\nNode AUX \"" + production[j] + "\"");
 //                System.out.println("\nToken Atual : \"" + listTokens.get(i).getString() + "\"");
-                for (; i < listTokens.size(); i++) {
-                    System.out.println(listTokens.get(i).getString());
-                    if (listTokens.get(i).getType() != TokenEnum.SPACE && listTokens.get(i).getType() != TokenEnum.BLOCK_COMMENT && listTokens.get(i).getType() != TokenEnum.LINE_COMMENT && listTokens.get(i).getType() != TokenEnum.SYMBOL) {
-                        break;
+                    if (i >= listTokens.size()) {
+                        return;
                     }
-                    System.out.println("Pulando Token");
-                }
-                System.out.println("Token Atual : \"" + listTokens.get(i).getString() + "\" " + listTokens.get(i).getType());
-                if (nodeAux == null) {
-                    System.out.println("Node Null");
-                    if (production[j].equals(listTokens.get(i).getString())) {
-                        System.out.println("Found: " + production[j]);
-                        i++;
-                    } else if (listTokens.get(i).getType() == TokenEnum.IDENTIFIER && production[j].equals("Identifier")) {
-                        System.out.println("Found: " + production[j]);
-                        i++;
-                    } else if(listTokens.get(i).getType() == TokenEnum.NUMBER && production[j].equals("NumberTerminal")){
-                        System.out.println("Found: " + production[j]);
-                        i++;
-                    }
-                } else {
-                    System.out.println("Produções de " + nodeAux.getValue());
-                    for (String string1 : nodeAux.getFirst()) {
-                        System.out.println(string1);
-                    }
-                    if (nodeAux.firstContains(listTokens.get(i).getString())) {
-                        System.out.println("Contém");
-                        i = s(nodeAux, i) + 1;
-                        if (i == -2) {
-                            return i;
-                        }
-                        System.out.println("Retornando do loop");
-                    } else {
-                        System.out.println("Não Contém!");
-                        if (!nodeAux.firstContains("")) {
-                            System.out.println("Não contém Vazio");
-                            if (j + 1 >= production.length) {
-                                return --i;
-                            }
+                    for (; i < listTokens.size(); i++) {
+//                    System.out.println(listTokens.get(i).getString());
+                        if (listTokens.get(i).getType() != TokenEnum.SPACE && listTokens.get(i).getType() != TokenEnum.BLOCK_COMMENT && listTokens.get(i).getType() != TokenEnum.LINE_COMMENT && listTokens.get(i).getType() != TokenEnum.SYMBOL) {
                             break;
                         }
+                        System.out.println("Pulando Token");
+                    }
+                    if (i >= listTokens.size()) {
+                        return;
+                    }
+                    System.out.println("Token Atual : \"" + listTokens.get(i).getString() + "\" " + listTokens.get(i).getType());
+                    if (nodeAux == null) {
+//                    System.out.println("Node Null");
+                        if (production[j].equals(listTokens.get(i).getString())) {
+                            System.out.println("Found: " + production[j]);
+                            i++;
+                            if (j + 1 >= production.length) {
+                                k = node.getProductions().length;
+                            }
+                        } else if (listTokens.get(i).getType() == TokenEnum.IDENTIFIER && production[j].equals("Identifier")) {
+                            System.out.println("Found: " + production[j]);
+                            i++;
+                            if (j + 1 >= production.length) {
+                                k = node.getProductions().length;
+                            }
+                        } else if (listTokens.get(i).getType() == TokenEnum.NUMBER && production[j].equals("NumberTerminal")) {
+                            System.out.println("Found: " + production[j]);
+                            i++;
+                            if (j + 1 >= production.length) {
+                                k = node.getProductions().length;
+                            }
+                        } else if (listTokens.get(i).getType() == TokenEnum.STRING && production[j].equals("StringLiteral")) {
+                            System.out.println("Found: " + production[j]);
+                            i++;
+                            if (j + 1 >= production.length) {
+                                k = node.getProductions().length;
+                            }
+                        }
+                    } else {
+//                    System.out.println("Produções de " + nodeAux.getValue());
+//                    for (String string1 : nodeAux.getFirst()) {
+//                        System.out.println(string1);
+//                    }
+
+                        if (nodeAux.firstContains("NumberTerminal") && listTokens.get(i).getType() == TokenEnum.NUMBER) {
+//                        System.out.println("Contém Numero");
+                            s(nodeAux);
+                            System.out.println("Retornando do loop");
+                        } else if (nodeAux.firstContains("Identifier") && listTokens.get(i).getType() == TokenEnum.IDENTIFIER) {
+//                        System.out.println("Contém Numero");
+                            s(nodeAux);
+                            System.out.println("Retornando do loop");
+                        } else if (nodeAux.firstContains("StringLiteral") && listTokens.get(i).getType() == TokenEnum.STRING) {
+//                        System.out.println("Contém Numero");
+                            s(nodeAux);
+                            System.out.println("Retornando do loop");
+                        } else if (nodeAux.firstContains(listTokens.get(i).getString())) {
+//                        System.out.println("Contém");
+                            s(nodeAux);
+                            System.out.println("Retornando do loop");
+                        } else {
+//                        System.out.println("Não Contém!");
+                            if (!nodeAux.firstContains("")) {
+//                            System.out.println("Não contém Vazio");
+                                if (j > 0) {
+                                    k = 100;
+                                }
+                                break;
+                            }
+                        }
                     }
                 }
+                System.out.println("Próxima produção");
             }
-            System.out.println("Próxima produção");
+            if (i >= listTokens.size()) {
+                System.out.println("Terminou");
+            }
         }
-        return i;
     }
 
     private void eat() {
