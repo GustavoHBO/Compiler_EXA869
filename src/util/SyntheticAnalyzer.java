@@ -115,6 +115,12 @@ public class SyntheticAnalyzer {
                             if (j + 1 >= production.length) {
                                 k = node.getProductions().length;
                             }
+                        } else if (listTokens.get(i).getType() == TokenEnum.DIGIT && production[j].equals("NumberTerminal")) {
+                            System.out.println("Found: " + production[j]);
+                            i++;
+                            if (j + 1 >= production.length) {
+                                k = node.getProductions().length;
+                            }
                         } else if (listTokens.get(i).getType() == TokenEnum.STRING && production[j].equals("StringLiteral")) {
                             System.out.println("Found: " + production[j]);
                             i++;
@@ -133,6 +139,10 @@ public class SyntheticAnalyzer {
                             s(nodeAux);
                             System.out.println("Retornando do loop");
                         } else if (nodeAux.firstContains("Identifier") && listTokens.get(i).getType() == TokenEnum.IDENTIFIER) {
+//                        System.out.println("Contém Numero");
+                            s(nodeAux);
+                            System.out.println("Retornando do loop");
+                        } else if (nodeAux.firstContains("NumberTerminal") && listTokens.get(i).getType() == TokenEnum.DIGIT) {
 //                        System.out.println("Contém Numero");
                             s(nodeAux);
                             System.out.println("Retornando do loop");
