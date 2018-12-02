@@ -67,37 +67,71 @@ public class SyntheticAnalyzer {
 //                    }
 //                }
 //            }
-            s(node, listTokens, grammar, 0);
+            s(node, 0);
         }
     }
 
-    public boolean s(Node node, ArrayList<Token> listTokens, Grammar grammar, int i) {
+    public int s(Node node, int i) {
         System.out.println(node.getValue());
         Node nodeAux;
+
+        if (i >= listTokens.size()) {
+            System.out.println("Estourou o limite do array");
+            return -2;
+        }
+
         for (String[] production : node.getProductions()) {
-            for (String string : production) {
-                nodeAux = grammar.getNode(string);
-                System.out.println("Node AUX " + string);
+            for (int j = 0; j < production.length; j++) {
+                nodeAux = grammar.getNode(production[j]);
+                System.out.println("\nNode AUX \"" + production[j] + "\"");
+//                System.out.println("\nToken Atual : \"" + listTokens.get(i).getString() + "\"");
+                for (; i < listTokens.size(); i++) {
+                    System.out.println(listTokens.get(i).getString());
+                    if (listTokens.get(i).getType() != TokenEnum.SPACE && listTokens.get(i).getType() != TokenEnum.BLOCK_COMMENT && listTokens.get(i).getType() != TokenEnum.LINE_COMMENT && listTokens.get(i).getType() != TokenEnum.SYMBOL) {
+                        break;
+                    }
+                    System.out.println("Pulando Token");
+                }
+                System.out.println("Token Atual : \"" + listTokens.get(i).getString() + "\" " + listTokens.get(i).getType());
                 if (nodeAux == null) {
-                    if (string.equals(listTokens.get(i).getString()));
+                    System.out.println("Node Null");
+                    if (production[j].equals(listTokens.get(i).getString())) {
+                        System.out.println("Found: " + production[j]);
+                        i++;
+                    } else if (listTokens.get(i).getType() == TokenEnum.IDENTIFIER && production[j].equals("Identifier")) {
+                        System.out.println("Found: " + production[j]);
+                        i++;
+                    } else if(listTokens.get(i).getType() == TokenEnum.NUMBER && production[j].equals("NumberTerminal")){
+                        System.out.println("Found: " + production[j]);
+                        i++;
+                    }
                 } else {
                     System.out.println("Produções de " + nodeAux.getValue());
                     for (String string1 : nodeAux.getFirst()) {
                         System.out.println(string1);
                     }
-                    if (!nodeAux.firstContains("")) {
-                        System.out.println("Não contém Vazio");
-                        if (nodeAux.firstContains(string)) {
-                            System.out.println("Contém");
+                    if (nodeAux.firstContains(listTokens.get(i).getString())) {
+                        System.out.println("Contém");
+                        i = s(nodeAux, i) + 1;
+                        if (i == -2) {
+                            return i;
                         }
-                        break;
+                        System.out.println("Retornando do loop");
+                    } else {
+                        System.out.println("Não Contém!");
+                        if (!nodeAux.firstContains("")) {
+                            System.out.println("Não contém Vazio");
+                            if (j + 1 >= production.length) {
+                                return --i;
+                            }
+                            break;
+                        }
                     }
-                    System.out.println("Contém Vazio");
                 }
             }
             System.out.println("Próxima produção");
         }
-        return false;
+        return i;
     }
 
     private void eat() {

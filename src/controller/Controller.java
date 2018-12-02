@@ -126,9 +126,6 @@ public class Controller {
 
     /*------------------------------------------------------------ Synthetic Analyzer Methods ------------------------------------------------------------*/
     private SyntheticAnalyzer getSyntheticAnalyzer() {
-        if (lexAnalyzer.getTokens() == null) {
-            System.out.println("eh nullo");
-        }
         return new SyntheticAnalyzer(lexAnalyzer.getTokens(), grammar);
     }
 

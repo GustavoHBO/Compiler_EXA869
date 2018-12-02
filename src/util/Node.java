@@ -89,7 +89,7 @@ public class Node extends Observable {
             getFirst();
         }
         for (String string : first) {
-            System.out.println("Comparando \"" + string + "\" com \"" + str + "\"");
+//            System.out.println("Comparando \"" + string + "\" com \"" + str + "\"");
             if (string.equals(str)) {
                 return true;
             }
