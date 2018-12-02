@@ -1,0 +1,17 @@
+const {
+	int PI = 3.1415
+}
+
+class Circulo {
+	variable {
+		int raio;
+	}
+
+	method int getRaio(){
+		return raio;
+	}
+
+	method int getDiametro(){
+		return raio*2;
+	}
+}
