@@ -1,3 +1,5 @@
-class feira{
-
+const{
+    int comida = 10;
+    string c = "ola" ;
+    bool h = true;
 }
