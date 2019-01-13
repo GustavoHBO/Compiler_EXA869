@@ -26,11 +26,10 @@ import exception.FileNotLexicalAnalyzerException;
 import exception.FileNotSavedException;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import model.Token;
-import util.Grammar;
-import util.LexicalAnalyzer;
-import util.Node;
-import util.SyntheticAnalyzer;
+import util.*;
 
 /**
  * This controller manage the layers of analyzer from the compiler. Such file
@@ -46,6 +45,7 @@ public class Controller {
     private final LexicalAnalyzer lexAnalyzer;
     private final Grammar grammar;
     private SyntheticAnalyzer synAnalyzer;
+    private SemanticAnalyzer semAnalyzer;
 
     /**
      * The controller for file, it will can running the analyzer the files.
@@ -59,6 +59,7 @@ public class Controller {
         this.fileName = fileName;
         this.lexAnalyzer = getLexicalAnalyzer(); // Obtains the list of tokens
         this.grammar = new Grammar(); // Obtains the grammar
+        this.semAnalyzer = new SemanticAnalyzer();
     }
 
     /*____________________________________________________________ Public Methods ____________________________________________________________*/
@@ -71,6 +72,7 @@ public class Controller {
         this.lexAnalyzer.analyzeFile();
         this.synAnalyzer = getSyntheticAnalyzer(); // Analyze the list of tokens
         this.synAnalyzer.analyzerTokens();
+        this.semAnalyzer.start(this.lexAnalyzer.getTokens().stream().filter(it -> !it.getType().getNAME().equals("Space")).filter(it -> !it.getType().getNAME().equals("Symbol")).collect(Collectors.toList()));
     }
 
     /*------------------------------------------------------------ Lexical Methods ------------------------------------------------------------*/

@@ -79,7 +79,7 @@ public final class LexicalAnalyzer {
                 } else if (tokenFound.matches(TokenEnum.DIGIT.getREGEX())) {// Verify is the token found is a digit.
                     token = new Token(TokenEnum.DIGIT, countLine, countColumn, tokenFound);
                 } else if (tokenFound.matches(TokenEnum.NUMBER.getREGEX())) {// Verify is the token found is a number.
-                    token = new Token(TokenEnum.NUMBER, countLine, countColumn, tokenFound);
+                    token = new Token(TokenEnum.NUMBER, countLine, countColumn, tokenFound.trim());
                 } else if (tokenFound.matches(TokenEnum.LETTER.getREGEX())) {// Verify is the token found is a letter.
                     token = new Token(TokenEnum.LETTER, countLine, countColumn, tokenFound);
                 } else if (tokenFound.matches(TokenEnum.ARITHMETIC_OPERATOR.getREGEX())) {// Verify is the token found is an arithmetic operator.
@@ -100,7 +100,7 @@ public final class LexicalAnalyzer {
                     token = new Token(TokenEnum.SYMBOL, countLine, countColumn, tokenFound);
                 } else if (tokenFound.matches(TokenEnum.SPACE.getREGEX())) {// Verify is the token found is a space.
                     token = new Token(TokenEnum.SPACE, countLine, countColumn, tokenFound);
-                } /* The next section identifies possible errors of bad token formation */ 
+                } /* The next section identifies possible errors of bad token formation */
                 else if (tokenFound.matches(TokenEnum.ERROR_NUMBER.getREGEX())) {// Verify is the token found is a number wrong.
                     token = new Token(TokenEnum.ERROR_NUMBER, countLine, countColumn, tokenFound);
                 } else if (tokenFound.matches(TokenEnum.ERROR_NUMBER_FLOAT.getREGEX())) {// Verify is the token found is a float number wrong.

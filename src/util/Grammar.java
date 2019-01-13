@@ -52,8 +52,8 @@ public final class Grammar implements IGrammar, Observer {
             productions = new String[][]{{"extends", "Identifier"}, {""}};
             addProduction("<Extends>", productions);
             productions = new String[][]{{"string"}, {"int"}, {"float"}, {"bool"}, {"void"}, {"Identifier"}};
-            addProduction("<Type>", productions);
-            productions = new String[][]{{"<If-Block>", "<Code Statements>"}, {"<Looping-Block>", "<Code Statements>"}, {"<Line Code>", ";", "<Code Statements>"}, {"<Variables>", "<Code Statements>"}, {""}};
+            addProduction("<TypesRunTime>", productions);
+            productions = new String[][]{{"<If-Block>", "<Code Statements>"}, {"<Looping-Block>", "<Code Statements>"}, {"<Line Code>", ";", "<Code Statements>"}, {"<Variable>", "<Code Statements>"}, {""}};
             addProduction("<Code Statements>", productions);
             productions = new String[][]{{",", "<Initial Value>", "<Argument>"}, {""}};
             addProduction("<Argument>", productions);
@@ -65,7 +65,7 @@ public final class Grammar implements IGrammar, Observer {
             addProduction("<Expression>", productions);
             productions = new String[][]{{"<Declaration>", "<Parameter>"}, {""}};
             addProduction("<Parameters>", productions);
-            productions = new String[][]{{"<Type>", "<Valid Identifier>"}};
+            productions = new String[][]{{"<TypesRunTime>", "<Valid Identifier>"}};
             addProduction("<Declaration>", productions);
             productions = new String[][]{{"read", "(", "<Valid Values>", "<Read Parameters>", ")"}};
             addProduction("<Read>", productions);
@@ -97,7 +97,7 @@ public final class Grammar implements IGrammar, Observer {
             addProduction("<Return Statement>", productions);
             productions = new String[][]{{"const", "{", "<Constant Assignment>", "}"}};
             addProduction("<Constants>", productions);
-            productions = new String[][]{{"<Variables>", "<Class Code>"}, {"<Methods>", "<Class Code>"}, {""}};
+            productions = new String[][]{{"<Variable>", "<Class Code>"}, {"<Methods>", "<Class Code>"}, {""}};
             addProduction("<Class Code>", productions);
             productions = new String[][]{{"<Value>"}, {"<Valid Identifier>", "<Attribute Access>"}};
             addProduction("<Valid Values>", productions);
@@ -124,7 +124,7 @@ public final class Grammar implements IGrammar, Observer {
             productions = new String[][]{{"class", "Identifier", "<Extends>", "{", "<Class Code>", "}"}};
             addProduction("<Class>", productions);
             productions = new String[][]{{"variables", "{", "<Variable Assignment>", "}"}};
-            addProduction("<Variables>", productions);
+            addProduction("<Variable>", productions);
             productions = new String[][]{{"<Initial Value>"}, {"<Initial Value>", ",", "<Init Array_3>"}};
             addProduction("<Init Array_3>", productions);
             productions = new String[][]{{"<Multiple Identifier>", "<Initialize>"}};

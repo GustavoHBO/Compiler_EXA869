@@ -44,7 +44,7 @@ public class Token {
     
     @Override
     public String toString(){
-        return "Found a token! Line: " + getLine() + " Column: " + getColumn() + " | Type: " + getType().getNAME() + " : \"" + getString() + "\"\n";
+        return "Found a token! Line: " + getLine() + " Column: " + getColumn() + " | TypesRunTime: " + getType().getNAME() + " : \"" + getString() + "\"\n";
     }
     
     /**

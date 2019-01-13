@@ -42,7 +42,7 @@ public enum TokenEnum {
     LINE_COMMENT(10, "Line Comment", "\\/\\/.*"), 
     BLOCK_COMMENT(9, "Block Comment", "\\/\\*[\\s\\S]*\\*\\/"), 
     DELIMITER(11, "Delimiter", ";|,|\\(|\\)|\\[|\\]|\\{|\\}|\\."), 
-    STRING(12, "String", "\"(\\x20|\\x21|[\\x23-\\x7E]|\\d|\\\")*\""), 
+    STRING(12, "Striang", "\"(\\x20|\\x21|[\\x23-\\x7E]|\\d|\\\")*\""),
     SYMBOL(13, "Symbol", "\\x20|\\x21|[\\x23-\\x7E]"), 
     SPACE(14, "Space", "\\s"), 
     ERROR(15, "ERROR", ""),
