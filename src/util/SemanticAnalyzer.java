@@ -4,6 +4,7 @@ import model.Token;
 import model.semantic.*;
 import model.semantic.Class;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
@@ -481,6 +482,8 @@ class SemanticAnalyzerParse2 {
     private int valueIndex;
     private List<Token> tokenList;
 
+    private ArrayList<String> tokenListErro;
+
     private Token currentToken;
     private Token previousToken;
     private String lastIdentifier;
@@ -492,10 +495,27 @@ class SemanticAnalyzerParse2 {
     public void start(List<Token> l, Global global) {
         valueIndex = -1; //Started tokens beginning
         this.tokenList = l;
+        this.tokenListErro = new ArrayList<>();
         this.global = global;
         nextToken();
         checkConstant();
         checkClass();
+        //output files
+        saveFileErro();
+    }
+
+    private void saveFileErro() {
+        try {
+            WriteReadFile a = new WriteReadFile("files/semantic_output/", "output");
+            if (tokenListErro.isEmpty()){
+                a.putMessage("Sucesso");
+            }else {
+                a.saveMsgErro(tokenListErro);
+            }
+        } catch (Exception e){
+            System.out.println(e);
+
+        }
     }
 
     private void checkClass() {
@@ -745,12 +765,16 @@ class SemanticAnalyzerParse2 {
     }
 
     private void erro(Token currentToken, String expectedType, String foundType) {
-        System.err.println("Erro na palavra \'" + currentToken.getString() + "\' na linha " + currentToken.getLine() + " tipo não compativel. Esperava um \'" + expectedType + "\'" +
-                " encontrou \'" + foundType + "\'");
+        String msg = "Erro na palavra \'" + currentToken.getString() + "\' na linha " + currentToken.getLine() + " tipo não compativel. Esperava um \'" + expectedType + "\'" +
+                " encontrou \'" + foundType + "\'";
+        System.err.println(msg);
+        tokenListErro.add(msg);
     }
 
     private void erro(Token currentToken, String erro) {
-        System.err.println("Erro na palavra \'" + currentToken.getString() + "\' na linha " + currentToken.getLine() + ". Erro: "+erro);
+        String msg = "Erro na palavra \'" + currentToken.getString() + "\' na linha " + currentToken.getLine() + ". Erro: "+erro;
+        System.err.println(msg);
+        tokenListErro.add(msg);
     }
 
 

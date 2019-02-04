@@ -142,6 +142,48 @@ public class WriteReadFile implements IWriteReadFile{
             throw new FileNotSavedException(name);
         }
     }
+
+    public void putMessage(String msg) {
+        String name = "default";
+        if (fileName.lastIndexOf(".") != -1) {// Look for last . for remove the extension .*
+            name = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+
+        File fileOutput = new File(filePath + name + ".lex");
+        if (fileOutput.exists()) {
+            fileOutput.delete();
+        }
+
+        try (FileWriter fileWriter = new FileWriter(fileOutput); PrintWriter filePrinter = new PrintWriter(fileWriter)) {//Write the file.
+            filePrinter.println(msg);
+            filePrinter.close();
+            fileWriter.close();
+        } catch (IOException ex) {
+
+        }
+    }
+
+    public void saveMsgErro(ArrayList<String> list_tokens) throws FileNotSavedException {
+        String name = "default";
+        if(fileName.lastIndexOf(".") != -1){// Look for last . for remove the extension .*
+            name = fileName.substring(0, fileName.lastIndexOf("."));
+        }
+
+        File fileOutput = new File(filePath + name + ".lex");
+        if(fileOutput.exists()){
+            fileOutput.delete();
+        }
+
+        try (FileWriter fileWriter = new FileWriter(fileOutput); PrintWriter filePrinter = new PrintWriter(fileWriter)) {//Write the file.
+            list_tokens.forEach((list_token) -> {
+                filePrinter.println(list_token);
+            });
+            filePrinter.close();
+            fileWriter.close();
+        } catch (IOException ex) {
+            throw new FileNotSavedException(name);
+        }
+    }
     
     
 }
