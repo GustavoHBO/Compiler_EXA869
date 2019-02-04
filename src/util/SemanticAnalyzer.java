@@ -78,6 +78,9 @@ public class SemanticAnalyzer {
         if (match("class") && match("Identifier")){
             Class c = new Class();
             c.setName(lastIdentifier);
+            if (c.getName().equals("aluno")){
+                System.out.println();
+            }
             currentClass = c;
             changeGeneric(c);
             typesRunTime.addType(c.getName());
@@ -549,6 +552,9 @@ class SemanticAnalyzerParse2 {
         if (match("int|float|string|bool|void") || match(global.getClassRegex())) {
             if (match("Identifier")) {
                 Method m = findMethod(previousToken.getString());
+                if (m.getName().equals("imprimir")){
+                    System.out.println();
+                }
                 if (m != null) {
                     int pilha = 1;
                     while (!match("{")) nextToken();

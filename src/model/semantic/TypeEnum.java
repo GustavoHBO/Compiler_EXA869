@@ -34,7 +34,7 @@ public enum TypeEnum {
     }
 
     public static String getRegex(){
-        return "Digit|Number|String|void|bool|float|string";
+        return "Digit|Number|String|void|bool|float|string|int";
     }
 
     @Override

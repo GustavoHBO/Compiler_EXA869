@@ -142,9 +142,9 @@ Found a token! Line: 9 Column: 17 | TypesRunTime: Symbol : " "
 
 Found a token! Line: 9 Column: 18 | TypesRunTime: Relational Operator : "="
 
-Found a token! Line: 9 Column: 19 | TypesRunTime: Number : "21.8"
+Found a token! Line: 9 Column: 19 | TypesRunTime: Number : "21"
 
-Found a token! Line: 9 Column: 24 | TypesRunTime: Delimiter : ";"
+Found a token! Line: 9 Column: 22 | TypesRunTime: Delimiter : ";"
 
 Found a token! Line: 10 Column: 0 | TypesRunTime: Symbol : " "
 
@@ -434,21 +434,9 @@ Found a token! Line: 25 Column: 9 | TypesRunTime: Symbol : " "
 
 Found a token! Line: 25 Column: 10 | TypesRunTime: Relational Operator : "="
 
-Found a token! Line: 25 Column: 11 | TypesRunTime: Symbol : " "
+Found a token! Line: 25 Column: 11 | TypesRunTime: Number : "14"
 
-Found a token! Line: 25 Column: 12 | TypesRunTime: Identifier : "calcula_aumento_bolsa"
-
-Found a token! Line: 25 Column: 33 | TypesRunTime: Delimiter : "("
-
-Found a token! Line: 25 Column: 34 | TypesRunTime: Number : "18"
-
-Found a token! Line: 25 Column: 36 | TypesRunTime: Delimiter : ","
-
-Found a token! Line: 25 Column: 37 | TypesRunTime: Number : "3"
-
-Found a token! Line: 25 Column: 39 | TypesRunTime: Delimiter : ")"
-
-Found a token! Line: 25 Column: 40 | TypesRunTime: Delimiter : ";"
+Found a token! Line: 25 Column: 14 | TypesRunTime: Delimiter : ";"
 
 Found a token! Line: 26 Column: 0 | TypesRunTime: Symbol : " "
 

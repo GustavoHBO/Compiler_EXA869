@@ -6,7 +6,7 @@ const {
 class pessoa {
     variables {
         string nome, endereco;
-        int idade = 21.8;
+        int idade = 21;
     }
 }
 
@@ -22,7 +22,7 @@ class aluno extends pessoa {
             float i;
         }
     
-        i = calcula_aumento_bolsa(18, 3);
+        i = 14;
         while (i < 10) {
             write(x[i].nome, x[i].endereco, x[i].idade, x[i].curso, x[i].matricula, x[i].bolsa);
             i++;        
